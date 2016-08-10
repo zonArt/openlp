@@ -23,8 +23,8 @@
 import logging
 import os
 
-from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file
-from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
+from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file, UiStrings
+from openlp.plugins.bibles.lib import parse_reference, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from .csvbible import CSVBible
 from .http import HTTPBible
@@ -267,42 +267,21 @@ class BibleManager(RegistryProperties):
             For second bible this is necessary.
         :param show_error:
         """
+        # If no bibles are installed, message is given.
         log.debug('BibleManager.get_verses("{bible}", "{verse}")'.format(bible=bible, verse=verse_text))
         if not bible:
             if show_error:
                 self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                    translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the '
-                              'Import Wizard to install one or more Bibles.')
-                )
+                    UiStrings().BibleNoBiblesTitle,
+                    UiStrings().BibleNoBibles)
             return None
+        # Get the language for books.
         language_selection = self.get_language_selection(bible)
         ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
         if ref_list:
             return self.db_cache[bible].get_verses(ref_list, show_error)
+        # If nothing is found. Message is given if this is not combined search. (defined in mediaitem.py)
         else:
-            if show_error:
-                reference_separators = {
-                    'verse': get_reference_separator('sep_v_display'),
-                    'range': get_reference_separator('sep_r_display'),
-                    'list': get_reference_separator('sep_l_display')}
-                self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                    translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
-                              'OpenLP or is invalid. Please make sure your reference '
-                              'conforms to one of the following patterns or consult the manual:\n\n'
-                              'Book Chapter\n'
-                              'Book Chapter%(range)sChapter\n'
-                              'Book Chapter%(verse)sVerse%(range)sVerse\n'
-                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                              '%(range)sVerse\n'
-                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
-                              '%(verse)sVerse%(range)sVerse\n'
-                              'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
-                              'Please pay attention to the appended "s" of the wildcards '
-                              'and refrain from translating the words inside the names in the brackets.')
-                    % reference_separators
-                )
             return None
 
     def get_language_selection(self, bible):
@@ -334,13 +313,11 @@ class BibleManager(RegistryProperties):
         :param text: The text to search for (unicode).
         """
         log.debug('BibleManager.verse_search("{bible}", "{text}")'.format(bible=bible, text=text))
+        # If no bibles are installed, message is given.
         if not bible:
             self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                translate('BiblesPlugin.BibleManager',
-                          'There are no Bibles currently installed. Please use the Import Wizard to install one or '
-                          'more Bibles.')
-            )
+                UiStrings().BibleNoBiblesTitle,
+                UiStrings().BibleNoBibles)
             return None
         # Check if the bible or second_bible is a web bible.
         web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
@@ -348,20 +325,56 @@ class BibleManager(RegistryProperties):
         if second_bible:
             second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
         if web_bible or second_web_bible:
+            # If either Bible is Web, cursor is reset to normal and message is given.
+            self.application.set_normal_cursor()
             self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
-                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
+                translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used in Text Search'),
+                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
+                                                       'Please use the Scripture Reference Search instead.\n\n'
+                                                       'This means that the currently used Bible\nor Second Bible '
+                                                       'is installed as Web Bible.\n\n'
+                                                       'If you were trying to perform a Reference search\nin Combined '
+                                                       'Search, your reference is invalid.')
             )
             return None
-        if text:
+        # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
+        if len(text) - text.count(' ') < 3:
+            return None
+        # Fetch the results from db. If no results are found, return None, no message is given for this.
+        elif text:
             return self.db_cache[bible].verse_search(text)
         else:
-            self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                translate('BiblesPlugin.BibleManager', 'You did not enter a search keyword.\nYou can separate '
-                          'different keywords by a space to search for all of your keywords and you can separate '
-                          'them by a comma to search for one of them.')
-            )
+            return None
+
+    def verse_search_while_typing(self, bible, second_bible, text):
+        """
+        Does a verse search for the given bible and text.
+        This is used during "Search while typing"
+        It's the same thing as the normal text search, but it does not show the web Bible error.
+        (It would result in the error popping every time a char is entered or removed)
+        It also does not have a minimum text len, this is set in mediaitem.py
+
+        :param bible: The bible to search in (unicode).
+        :param second_bible: The second bible (unicode). We do not search in this bible.
+        :param text: The text to search for (unicode).
+        """
+        # If no bibles are installed, message is given.
+        if not bible:
+            return None
+        # Check if the bible or second_bible is a web bible.
+        web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
+        second_web_bible = ''
+        if second_bible:
+            second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
+        if web_bible or second_web_bible:
+            # If either Bible is Web, cursor is reset to normal and search ends w/o any message.
+            self.check_search_result()
+            self.application.set_normal_cursor()
+            return None
+        # Fetch the results from db. If no results are found, return None, no message is given for this.
+        elif text:
+            return self.db_cache[bible].verse_search(text)
+        else:
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions, book_name_language=None):
