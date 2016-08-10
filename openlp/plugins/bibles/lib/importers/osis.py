@@ -32,43 +32,47 @@ log = logging.getLogger(__name__)
 
 NS = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
 # Tags we don't use and can remove the content
-REMOVABLE_ELEMENTS = ('{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
-                      '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure')
+REMOVABLE_ELEMENTS = (
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure'
+)
 # Tags we don't use but need to keep the content
-REMOVABLE_TAGS = ('{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}l',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}lg',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}q',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}a',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}w',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}divineName',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}foreign',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}hi',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}inscription',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}mentioned',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}name',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}reference',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}seg',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}transChange',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}salute',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}signed',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}closer',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}speech',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}speaker',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}list',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}item',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}table',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}head',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}row',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
-                  '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption')
+REMOVABLE_TAGS = (
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}l',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}lg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}q',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}a',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}w',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}divineName',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}foreign',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}hi',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}inscription',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}mentioned',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}name',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}reference',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}seg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}transChange',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}salute',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}signed',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}closer',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}speech',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}speaker',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}list',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}item',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}table',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}head',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}row',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption'
+)
 
 
 def replacement(match):
