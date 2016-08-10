@@ -34,9 +34,9 @@ from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
 from openlp.core.ui.lib import OpenLPToolbar
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.lib.projector import DialogSourceStyle
-from openlp.core.lib.projector.constants import S_NOT_CONNECTED, S_CONNECTING, S_CONNECTED, S_OFF, S_INITIALIZE, \
-    S_STANDBY, S_WARMUP, S_ON, S_COOLDOWN, E_ERROR, E_NETWORK, E_AUTHENTICATION, E_UNKNOWN_SOCKET_ERROR, \
-    E_NOT_CONNECTED
+from openlp.core.lib.projector.constants import ERROR_MSG, ERROR_STRING, E_AUTHENTICATION, E_ERROR, \
+    E_NETWORK, E_NOT_CONNECTED, E_UNKNOWN_SOCKET_ERROR, STATUS_STRING, S_CONNECTED, S_CONNECTING, S_COOLDOWN, \
+    S_INITIALIZE, S_NOT_CONNECTED, S_OFF, S_ON, S_STANDBY, S_WARMUP
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.ui.projector.editform import ProjectorEditForm

@@ -49,7 +49,12 @@ from codecs import decode
 from PyQt5 import QtCore, QtNetwork
 
 from openlp.core.common import translate, qmd5_hash
-from openlp.core.lib.projector.constants import *
+from openlp.core.lib.projector.constants import CONNECTION_ERRORS, CR, ERROR_MSG, ERROR_STRING, \
+    E_AUTHENTICATION, E_CONNECTION_REFUSED, E_GENERAL, E_INVALID_DATA, E_NETWORK, E_NOT_CONNECTED, \
+    E_PARAMETER, E_PROJECTOR, E_SOCKET_TIMEOUT, E_UNAVAILABLE, E_UNDEFINED, PJLINK_ERRORS, \
+    PJLINK_ERST_STATUS, PJLINK_MAX_PACKET, PJLINK_PORT, PJLINK_POWR_STATUS, PJLINK_VALID_CMD, \
+    STATUS_STRING, S_CONNECTED, S_CONNECTING, S_NETWORK_RECEIVED, S_NETWORK_SENDING, S_NOT_CONNECTED, \
+    S_OFF, S_OK, S_ON, S_STATUS
 
 # Shortcuts
 SocketError = QtNetwork.QAbstractSocket.SocketError
