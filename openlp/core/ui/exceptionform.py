@@ -90,13 +90,12 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.settings_section = 'crashreport'
-        # TODO: Need to see how to format strings when string with tags is actually a variable
         self.report_text = '**OpenLP Bug Report**\n' \
-            'Version: %s\n\n' \
-            '--- Details of the Exception. ---\n\n%s\n\n ' \
-            '--- Exception Traceback ---\n%s\n' \
-            '--- System information ---\n%s\n' \
-            '--- Library Versions ---\n%s\n'
+            'Version: {version}\n\n' \
+            '--- Details of the Exception. ---\n\n{description}\n\n ' \
+            '--- Exception Traceback ---\n{traceback}\n' \
+            '--- System information ---\n{system}\n' \
+            '--- Library Versions ---\n{libs}\n'
 
     def exec(self):
         """
@@ -132,7 +131,9 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                 system += 'Desktop: GNOME\n'
             elif os.environ.get('DESKTOP_SESSION') == 'xfce':
                 system += 'Desktop: Xfce\n'
-        return openlp_version, description, traceback, system, libraries
+        # NOTE: Keys match the expected input for self.report_text.format()
+        return {'version': openlp_version, 'description': description, 'traceback': traceback,
+                'system': system, 'libs': libraries}
 
     def on_save_report_button_clicked(self):
         """
@@ -146,7 +147,9 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         if filename:
             filename = str(filename).replace('/', os.path.sep)
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
-            report_text = self.report_text % self._create_report()
+            opts = self._create_report()
+            report_text = self.report_text.format(version=opts['version'], description=opts['description'],
+                                                  traceback=opts['traceback'], libs=opts['libs'], system=opts['system'])
             try:
                 report_file = open(filename, 'w')
                 try:
@@ -169,7 +172,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         content = self._create_report()
         source = ''
         exception = ''
-        for line in content[2].split('\n'):
+        for line in content['traceback'].split('\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if ':' in line:
@@ -177,8 +180,11 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         subject = 'Bug report: {error} in {source}'.format(error=exception, source=source)
         mail_urlquery = QtCore.QUrlQuery()
         mail_urlquery.addQueryItem('subject', subject)
-        # TODO: Find out how to format() text that is in a variable
-        mail_urlquery.addQueryItem('body', self.report_text % content)
+        mail_urlquery.addQueryItem('body', self.report_text.format(version=content['version'],
+                                                                   description=content['description'],
+                                                                   traceback=content['traceback'],
+                                                                   system=content['system'],
+                                                                   libs=content['libs']))
         if self.file_attachment:
             mail_urlquery.addQueryItem('attach', self.file_attachment)
         mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
@@ -208,7 +214,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                                                    Settings().value(self.settings_section +
                                                                                     '/last directory'),
                                                                    '{text} (*)'.format(text=UiStrings().AllFiles))
-        log.info('New files(s) %s', str(files))
+        log.info('New files(s) {files}'.format(files=str(files)))
         if files:
             self.file_attachment = str(files)
 

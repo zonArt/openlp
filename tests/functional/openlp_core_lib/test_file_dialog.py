@@ -60,7 +60,7 @@ class TestFileDialog(TestCase):
         self.mocked_os.path.exists.side_effect = lambda file_name: file_name in [
             '/Valid File', '/url encoded file #1']
         self.mocked_ui_strings().FileNotFound = 'File Not Found'
-        self.mocked_ui_strings().FileNotFoundMessage = 'File %s not found.\nPlease try selecting it individually.'
+        self.mocked_ui_strings().FileNotFoundMessage = 'File {name} not found.\nPlease try selecting it individually.'
 
         # WHEN: FileDialog.getOpenFileNames is called
         result = FileDialog.getOpenFileNames(self.mocked_parent)

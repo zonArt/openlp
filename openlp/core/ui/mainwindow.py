@@ -1333,7 +1333,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: {name}'.format(name=filename))
-            # TODO: Verify ''.format() before committing
+            # TODO: Should be good
             action = create_action(self, '',
                                    text='&{n} {name}'.format(n=file_id + 1,
                                                              name=os.path.splitext(os.path.basename(str(filename)))[0]),

@@ -22,6 +22,7 @@
 
 import re
 
+from string import Template
 from PyQt5 import QtGui, QtCore, QtWebKitWidgets
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, RegistryMixin, Settings
@@ -370,8 +371,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
-        # TODO: Verify before converting to python3 strings
-        html = """<!DOCTYPE html><html><head><script>
+        html = Template("""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');
                 main.innerHTML = newtext;
@@ -380,12 +380,16 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                 // returned value).
                 return main.offsetHeight;
             }
-            </script><style>*{margin: 0; padding: 0; border: 0;}
-            #main {position: absolute; top: 0px; %s %s}</style></head><body>
-            <div id="main"></div></body></html>""" % \
-            (build_lyrics_format_css(theme_data, self.page_width, self.page_height),
-             build_lyrics_outline_css(theme_data))
-        self.web.setHtml(html)
+            </script>
+            <style>
+                *{margin: 0; padding: 0; border: 0;}
+                #main {position: absolute; top: 0px; ${format_css} ${outline_css}}
+            </style></head>
+            <body><div id="main"></div></body></html>""")
+        self.web.setHtml(html.substitute(format_css=build_lyrics_format_css(theme_data,
+                                                                            self.page_width,
+                                                                            self.page_height),
+                                         outline_css=build_lyrics_outline_css(theme_data)))
         self.empty_height = self.web_frame.contentsSize().height()
 
     def _paginate_slide(self, lines, line_end):
