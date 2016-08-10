@@ -284,3 +284,16 @@ class TestProjectorDB(TestCase):
         self.assertEqual(str(source),
                          '<ProjectorSource(id="1", code="11", text="First RGB source", projector_id="1")>',
                          'ProjectorSource.__repr__)_ should have returned a proper representation string')
+
+    def test_get_projector_by_id_none(self):
+        """
+        Test get_projector_by_id returns None if no db entry
+        """
+        # GIVEN: Test object and data
+        projector = self.projector
+
+        # WHEN: DB search for entry not saved
+        results = projector.get_projector_by_id(dbid=123134556409824506)
+
+        # THEN: Verify return was None
+        self.assertEqual(results, None, 'Returned results should have equaled None')

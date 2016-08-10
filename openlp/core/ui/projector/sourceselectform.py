@@ -30,8 +30,8 @@ log.debug('editform loaded')
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSlot, QSize
-from PyQt5.QtWidgets import QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, QRadioButton, \
-    QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAbstractButton, QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, \
+    QRadioButton, QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx
 from openlp.core.lib import build_icon
@@ -452,7 +452,7 @@ class SourceSelectSingle(QDialog):
         selected = super(SourceSelectSingle, self).exec()
         return selected
 
-    @pyqtSlot(object)
+    @pyqtSlot(QAbstractButton)
     def button_clicked(self, button):
         """
         Checks which button was clicked

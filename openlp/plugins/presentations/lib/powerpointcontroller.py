@@ -523,7 +523,7 @@ class PowerpointDocument(PresentationDocument):
             log.exception('Failed to exit Powerpoint presentation after error')
             log.exception(e)
         critical_error_message_box(UiStrings().Error, translate('PresentationPlugin.PowerpointDocument',
-                                                                'An error occurred in the Powerpoint integration '
+                                                                'An error occurred in the PowerPoint integration '
                                                                 'and the presentation will be stopped. '
                                                                 'Restart the presentation if you wish to present it.'))
 
