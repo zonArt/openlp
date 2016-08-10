@@ -246,7 +246,7 @@ class GeneralTab(SettingsTab):
         self.display_on_monitor_check.setText(translate('OpenLP.GeneralTab', 'Display if a single screen'))
         self.startup_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Startup'))
         self.warning_check_box.setText(translate('OpenLP.GeneralTab', 'Show blank screen warning'))
-        self.auto_open_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically open the last service'))
+        self.auto_open_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically open the previous service file'))
         self.show_splash_check_box.setText(translate('OpenLP.GeneralTab', 'Show the splash screen'))
         self.logo_group_box.setTitle(translate('OpenLP.GeneralTab', 'Logo'))
         self.logo_color_label.setText(UiStrings().BackgroundColorColon)
@@ -258,9 +258,10 @@ class GeneralTab(SettingsTab):
         self.settings_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Settings'))
         self.save_check_service_check_box.setText(translate('OpenLP.GeneralTab',
                                                   'Prompt to save before starting a new service'))
-        self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when adding new live item'))
+        self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when sending '
+                                                                           'items to Live'))
         self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab',
-                                                      'Automatically preview next item in service'))
+                                                      'Automatically preview the next item in service'))
         self.timeout_label.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))
         self.timeout_spin_box.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccli_group_box.setTitle(translate('OpenLP.GeneralTab', 'CCLI Details'))

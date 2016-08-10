@@ -289,7 +289,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.delay_spin_box = QtWidgets.QSpinBox()
             self.delay_spin_box.setObjectName('delay_spin_box')
             self.delay_spin_box.setRange(1, 180)
-            self.delay_spin_box.setSuffix(UiStrings().Seconds)
+            self.delay_spin_box.setSuffix(' {unit}'.format(unit=UiStrings().Seconds))
             self.delay_spin_box.setToolTip(translate('OpenLP.SlideController', 'Delay between slides in seconds.'))
             self.receive_spin_delay()
             self.toolbar.add_toolbar_widget(self.delay_spin_box)
