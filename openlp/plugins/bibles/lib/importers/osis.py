@@ -108,7 +108,7 @@ class OSISBible(BibleImport):
                 if self.stop_import_flag:
                     break
                 # Remove div-tags in the book
-                etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
+                etree.strip_tags(book, '{http://www.bibletechnologies.net/2003/OSIS/namespace}div')
                 book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
                 if not book_ref_id:
                     log.error('Importing books from "{name}" failed'.format(name=self.filename))
