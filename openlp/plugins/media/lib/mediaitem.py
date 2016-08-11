@@ -133,7 +133,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             disable_optical_button_text = True
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
             optical_button_tooltip = translate('MediaPlugin.MediaItem',
-                                               'Load CD/DVD - only supported when VLC is installed and enabled')
+                                               'CD/DVD Playback is only supported if VLC is installed and enabled.')
         self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=self.optical_icon,
                                                             text=optical_button_text,
                                                             tooltip=optical_button_tooltip,

@@ -488,6 +488,7 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
                                                         'You must select one or more items to preview.'))
         else:
             log.debug('%s Preview requested' % self.plugin.name)
+            Registry().set_flag('has doubleclick added item to service', False)
             service_item = self.build_service_item()
             if service_item:
                 service_item.from_plugin = True

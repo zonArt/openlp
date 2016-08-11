@@ -141,6 +141,7 @@ class Settings(QtCore.QSettings):
         'core/auto preview': False,
         'core/audio start paused': True,
         'core/auto unblank': False,
+        'core/click live slide to unblank': False,
         'core/blank warning': False,
         'core/ccli number': '',
         'core/has run wizard': False,

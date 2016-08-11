@@ -436,7 +436,7 @@ class PJLink1(QTcpSocket):
             return
         return self.process_command(cmd, data)
 
-    @pyqtSlot(int)
+    @pyqtSlot(QAbstractSocket.SocketError)
     def get_error(self, err):
         """
         Process error from SocketError signal.
