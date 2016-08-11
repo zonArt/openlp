@@ -20,41 +20,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the http module of the Bibles plugin.
+This module contains tests for the bibleserver module of the Bibles plugin.
 """
 from unittest import TestCase
 from bs4 import BeautifulSoup
 
 from tests.functional import patch, MagicMock
-from openlp.plugins.bibles.lib.importers.http import BSExtract
-
-# TODO: Items left to test
-#   BGExtract
-#       __init__
-#       _remove_elements
-#       _extract_verse
-#       _clean_soup
-#       _extract_verses
-#       _extract_verses_old
-#       get_bible_chapter
-#       get_books_from_http
-#       _get_application
-#   CWExtract
-#       __init__
-#       get_bible_chapter
-#       get_books_from_http
-#       _get_application
-#   HTTPBible
-#       __init__
-#       do_import
-#       get_verses
-#       get_chapter
-#       get_books
-#       get_chapter_count
-#       get_verse_count
-#       _get_application
-#   get_soup_for_bible_ref
-#   send_error_message
+from openlp.plugins.bibles.lib.importers.bibleserver import BSExtract
 
 
 class TestBSExtract(TestCase):
@@ -68,11 +40,12 @@ class TestBSExtract(TestCase):
     #       get_books_from_http
     #       _get_application
     def setUp(self):
-        self.get_soup_for_bible_ref_patcher = patch('openlp.plugins.bibles.lib.importers.http.get_soup_for_bible_ref')
-        self.log_patcher = patch('openlp.plugins.bibles.lib.importers.http.log')
-        self.send_error_message_patcher = patch('openlp.plugins.bibles.lib.importers.http.send_error_message')
-        self.socket_patcher = patch('openlp.plugins.bibles.lib.importers.http.socket')
-        self.urllib_patcher = patch('openlp.plugins.bibles.lib.importers.http.urllib')
+        self.get_soup_for_bible_ref_patcher = patch(
+            'openlp.plugins.bibles.lib.importers.bibleserver.get_soup_for_bible_ref')
+        self.log_patcher = patch('openlp.plugins.bibles.lib.importers.bibleserver.log')
+        self.send_error_message_patcher = patch('openlp.plugins.bibles.lib.importers.bibleserver.send_error_message')
+        self.socket_patcher = patch('openlp.plugins.bibles.lib.http.socket')
+        self.urllib_patcher = patch('openlp.plugins.bibles.lib.importers.bibleserver.urllib')
 
         self.mock_get_soup_for_bible_ref = self.get_soup_for_bible_ref_patcher.start()
         self.mock_log = self.log_patcher.start()

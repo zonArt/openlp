@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
+The :mod:`biblegateway` module enables OpenLP to retrieve scripture from http://biblegateway.com.
 """
 import logging
 import socket
@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 from openlp.core.common import RegistryProperties
 from openlp.core.lib.webpagereader import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.importers.http import get_soup_for_bible_ref, send_error_message
+from openlp.plugins.bibles.lib.http import get_soup_for_bible_ref, send_error_message
 
 UGLY_CHARS = {
     '\u2014': ' - ',

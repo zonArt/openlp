@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
+The :mod:`crosswalk` module enables OpenLP to retrieve scripture from www.biblestudytools.com.
 """
 import logging
 import re
@@ -30,7 +30,7 @@ import urllib.error
 
 from openlp.core.common import RegistryProperties
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.importers.http import get_soup_for_bible_ref, send_error_message
+from openlp.plugins.bibles.lib.http import get_soup_for_bible_ref, send_error_message
 
 FIX_PUNKCTUATION_REGEX = re.compile(r'[ ]+([.,;])')
 REDUCE_SPACES_REGEX = re.compile(r'[ ]{2,}')
