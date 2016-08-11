@@ -40,7 +40,9 @@ from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
 from openlp.core.common.languagemanager import get_locale_key
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import clean_filename
-from openlp.plugins.bibles.lib.importers.http import CWExtract, BGExtract, BSExtract
+from openlp.plugins.bibles.lib.importers.biblegateway import BGExtract
+from openlp.plugins.bibles.lib.importers.bibleserver import BSExtract
+from openlp.plugins.bibles.lib.importers.crosswalk import CWExtract
 
 log = logging.getLogger(__name__)
 
