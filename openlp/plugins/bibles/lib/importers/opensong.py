@@ -25,25 +25,17 @@ from lxml import etree, objectify
 
 from openlp.core.common import translate, trace_error_handler
 from openlp.core.lib.ui import critical_error_message_box
+from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
 
 
-class OpenSongBible(BibleDB):
+class OpenSongBible(BibleImport):
     """
-    OpenSong Bible format importer class.
+    OpenSong Bible format importer class. This class is used to import Bibles from OpenSong's XML format.
     """
-    def __init__(self, parent, **kwargs):
-        """
-        Constructor to create and set up an instance of the OpenSongBible class. This class is used to import Bibles
-        from OpenSong's XML format.
-        """
-        log.debug(self.__class__.__name__)
-        BibleDB.__init__(self, parent, **kwargs)
-        self.filename = kwargs['filename']
-
     def get_text(self, element):
         """
         Recursively get all text in an objectify element and its child elements.
@@ -64,16 +56,9 @@ class OpenSongBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        if not isinstance(self.filename, str):
-            self.filename = str(self.filename, 'utf8')
-        import_file = None
         success = True
         try:
-            # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
-            # detection, and the two mechanisms together interfere with each other.
-            import_file = open(self.filename, 'rb')
-            opensong = objectify.parse(import_file)
-            bible = opensong.getroot()
+            bible = self.parse_xml(self.filename, use_objectify=True)
             # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
             if bible.tag.upper() == 'XMLBIBLE':
                 critical_error_message_box(
@@ -82,9 +67,8 @@ class OpenSongBible(BibleDB):
                                       'please use the Zefania import option.'))
                 return False
             # No language info in the opensong format, so ask the user
-            language_id = self.get_language(bible_name)
+            language_id = self.get_language_id(bible_name=self.filename)
             if not language_id:
-                log.error('Importing books from "{name}" failed'.format(name=self.filename))
                 return False
             for book in bible.b:
                 if self.stop_import_flag:
@@ -138,9 +122,6 @@ class OpenSongBible(BibleDB):
         except (IOError, AttributeError):
             log.exception('Loading Bible from OpenSong file failed')
             success = False
-        finally:
-            if import_file:
-                import_file.close()
         if self.stop_import_flag:
             return False
         else:

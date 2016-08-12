@@ -21,30 +21,12 @@
 ###############################################################################
 
 """
-Forms in OpenLP are made up of two classes. One class holds all the graphical elements, like buttons and lists, and the
-other class holds all the functional code, like slots and loading and saving.
-
-The first class, commonly known as the **Dialog** class, is typically named ``Ui_<name>Dialog``. It is a slightly
-modified version of the class that the ``pyuic5`` command produces from Qt5's .ui file. Typical modifications will be
-converting most strings from "" to '' and using OpenLP's ``translate()`` function for translating strings.
-
-The second class, commonly known as the **Form** class, is typically named ``<name>Form``. This class is the one which
-is instantiated and used. It uses dual inheritance to inherit from (usually) QtWidgets.QDialog and the Ui class
-mentioned above, like so::
-
-    class BibleImportForm(QtWidgets.QWizard, Ui_BibleImportWizard):
-
-        def __init__(self, parent, manager, bible_plugin):
-            super(BibleImportForm, self).__init__(parent)
-            self.setupUi(self)
-
-This allows OpenLP to use ``self.object`` for all the GUI elements while keeping them separate from the functionality,
-so that it is easier to recreate the GUI from the .ui files later if necessary.
+The :mod:`forms` module contains all the ui functionality for the bibles
+plugin.
 """
 from .booknameform import BookNameForm
 from .languageform import LanguageForm
 from .bibleimportform import BibleImportForm
-from .bibleupgradeform import BibleUpgradeForm
 from .editbibleform import EditBibleForm
 
-__all__ = ['BookNameForm', 'LanguageForm', 'BibleImportForm', 'BibleUpgradeForm', 'EditBibleForm']
+__all__ = ['BookNameForm', 'LanguageForm', 'BibleImportForm', 'EditBibleForm']

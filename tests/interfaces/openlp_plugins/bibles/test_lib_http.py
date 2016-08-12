@@ -25,7 +25,7 @@
 from unittest import TestCase, skip
 
 from openlp.core.common import Registry
-from openlp.plugins.bibles.lib.http import BGExtract, CWExtract, BSExtract
+from openlp.plugins.bibles.lib.importers.http import BGExtract, CWExtract, BSExtract
 from tests.interfaces import MagicMock
 
 

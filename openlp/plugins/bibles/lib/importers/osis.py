@@ -23,105 +23,87 @@
 import logging
 from lxml import etree
 
-from openlp.core.common import languages, translate, trace_error_handler
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.core.common import translate, trace_error_handler
 from openlp.core.lib.ui import critical_error_message_box
+from openlp.plugins.bibles.lib.bibleimport import BibleImport
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
+
+NS = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
+# Tags we don't use and can remove the content
+REMOVABLE_ELEMENTS = (
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure'
+)
+# Tags we don't use but need to keep the content
+REMOVABLE_TAGS = (
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}l',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}lg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}q',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}a',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}w',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}divineName',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}foreign',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}hi',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}inscription',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}mentioned',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}name',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}reference',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}seg',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}transChange',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}salute',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}signed',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}closer',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}speech',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}speaker',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}list',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}item',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}table',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}head',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}row',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
+    '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption'
+)
 
 
 def replacement(match):
     return match.group(2).upper()
 
 
-class OSISBible(BibleDB):
+class OSISBible(BibleImport):
     """
     `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
     """
-    log.info('BibleOSISImpl loaded')
-
-    def __init__(self, parent, **kwargs):
-        log.debug(self.__class__.__name__)
-        BibleDB.__init__(self, parent, **kwargs)
-        self.filename = kwargs['filename']
-
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
-        if not isinstance(self.filename, str):
-            self.filename = str(self.filename, 'utf8')
-        import_file = None
         success = True
         try:
-            # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
-            # detection, and the two mechanisms together interfere with each other.
-            import_file = open(self.filename, 'rb')
-            osis_bible_tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
-            namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
-            # Find bible language
-            language_id = None
-            lang = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=namespace)
-            if lang:
-                language = languages.get_language(lang[0])
-                if hasattr(language, 'id'):
-                    language_id = language.id
-            # The language couldn't be detected, ask the user
-            if not language_id:
-                language_id = self.get_language(bible_name)
-            if not language_id:
-                log.error('Importing books from "{name}" failed'.format(name=self.filename))
-                return False
-            self.save_meta('language_id', language_id)
-            num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
                                                          'Removing unused tags (this may take a few minutes)...'))
-            # We strip unused tags from the XML, this should leave us with only chapter, verse and div tags.
-            # Strip tags we don't use - remove content
-            etree.strip_elements(osis_bible_tree, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure'),
-                                 with_tail=False)
-            # Strip tags we don't use - keep content
-            etree.strip_tags(osis_bible_tree, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}l',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}lg',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}q',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}a',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}w',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}divineName',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}foreign',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}hi',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}inscription',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}mentioned',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}name',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}reference',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}seg',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}transChange',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}salute',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}signed',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}closer',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}speech',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}speaker',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}list',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}item',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}table',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}head',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}row',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
-                                               '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption'))
+            osis_bible_tree = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
+            # Find bible language]
+            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=NS)
+            language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
+            if not language_id:
+                return False
+            num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=NS))
             # Precompile a few xpath-querys
-            verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=namespace)
-            text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=namespace)
+            verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
+            text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
             # Find books in the bible
-            bible_books = osis_bible_tree.xpath("//ns:div[@type='book']", namespaces=namespace)
+            bible_books = osis_bible_tree.xpath("//ns:div[@type='book']", namespaces=NS)
             for book in bible_books:
                 if self.stop_import_flag:
                     break
@@ -189,9 +171,6 @@ class OSISBible(BibleDB):
             critical_error_message_box(message=translate('BiblesPlugin.OsisImport',
                                                          'The file is not a valid OSIS-XML file:'
                                                          '\n{text}').format(text=e.msg))
-        finally:
-            if import_file:
-                import_file.close()
         if self.stop_import_flag:
             return False
         else:

@@ -24,9 +24,15 @@ The :mod:`~openlp.core.lib.exceptions` module contains custom exceptions
 """
 
 
+# TODO: Test  __init__ & __str__
 class ValidationError(Exception):
     """
     The :class:`~openlp.core.lib.exceptions.ValidationError` exception provides a custom exception for validating
     import files.
     """
-    pass
+
+    def __init__(self, msg="Validation Error"):
+        self.msg = msg
+
+    def __str__(self):
+        return '{error_message}'.format(error_message=self.msg)
