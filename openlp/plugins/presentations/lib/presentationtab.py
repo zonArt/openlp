@@ -125,11 +125,11 @@ class PresentationTab(SettingsTab):
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
         self.ppt_slide_click_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
-                      'Clicking on current slide advances to the next effect'))
+                      'Clicking on the current slide advances to the next effect'))
         self.ppt_window_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
                       'Let PowerPoint control the size and monitor of the presentations\n'
-                      '(This may fixes PowerPoint scaling issues in Windows 8 and 10)'))
+                      '(This may fix PowerPoint scaling issues in Windows 8 and 10)'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 

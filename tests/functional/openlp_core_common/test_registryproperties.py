@@ -75,3 +75,24 @@ class TestRegistryProperties(TestCase, RegistryProperties):
 
         # THEN the application should be none
         self.assertEqual(self.application, application, 'The application value should match')
+
+    @patch('openlp.core.common.registryproperties.is_win')
+    def test_get_application_on_windows(self, mocked_is_win):
+        """
+        Set that getting the application object on Windows happens dynamically
+        """
+        # GIVEN an Empty Registry and we're on Windows
+        mocked_is_win.return_value = True
+        mock_application = MagicMock()
+        reg_props = RegistryProperties()
+        registry = Registry()
+
+        # WHEN the application is accessed
+        with patch.object(registry, 'get') as mocked_get:
+            mocked_get.return_value = mock_application
+            actual_application = reg_props.application
+
+        # THEN the application should be the mock object, and the correct function should have been called
+        self.assertEqual(mock_application, actual_application, 'The application value should match')
+        mocked_is_win.assert_called_with()
+        mocked_get.assert_called_with('application')
