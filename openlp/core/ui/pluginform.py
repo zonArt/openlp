@@ -60,7 +60,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self._clear_details()
         self.programatic_change = True
         plugin_list_width = 0
-        # TODO: See how to use format() with variables
+        # TODO: Tested at home
         for plugin in self.plugin_manager.plugins:
             item = QtWidgets.QListWidgetItem(self.plugin_list_widget)
             # We do this just to make 100% sure the status is an integer as
@@ -68,19 +68,19 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
             if plugin.status == PluginStatus.Disabled:
-                status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
+                status_text = translate('OpenLP.PluginForm', '{name} (Disabled)')
             elif plugin.status == PluginStatus.Active:
-                status_text = translate('OpenLP.PluginForm', '%s (Active)')
+                status_text = translate('OpenLP.PluginForm', '{name} (Active)')
             else:
                 # PluginStatus.Inactive
-                status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
-            item.setText(status_text % plugin.name_strings['singular'])
+                status_text = translate('OpenLP.PluginForm', '{name} (Inactive)')
+            item.setText(status_text.format(name=plugin.name_strings['singular']))
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.plugin_list_widget.addItem(item)
             plugin_list_width = max(plugin_list_width, self.fontMetrics().width(
-                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.name_strings['singular']))
+                translate('OpenLP.PluginForm', '{name} (Inactive)').format(name=plugin.name_strings['singular'])))
         self.plugin_list_widget.setFixedWidth(plugin_list_width + self.plugin_list_widget.iconSize().width() + 48)
 
     def _clear_details(self):
@@ -137,13 +137,13 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
             self.active_plugin.app_startup()
         else:
             self.active_plugin.toggle_status(PluginStatus.Inactive)
-        # TODO: Verify using format() with a variable
-        status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
+        # TODO: Tested at home
+        status_text = translate('OpenLP.PluginForm', '{name} (Inactive)')
         if self.active_plugin.status == PluginStatus.Active:
-            status_text = translate('OpenLP.PluginForm', '%s (Active)')
+            status_text = translate('OpenLP.PluginForm', '{name} (Active)')
         elif self.active_plugin.status == PluginStatus.Inactive:
-            status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
+            status_text = translate('OpenLP.PluginForm', '{name} (Inactive)')
         elif self.active_plugin.status == PluginStatus.Disabled:
-            status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
+            status_text = translate('OpenLP.PluginForm', '{name} (Disabled)')
         self.plugin_list_widget.currentItem().setText(
-            status_text % self.active_plugin.name_strings['singular'])
+            status_text.format(name=self.active_plugin.name_strings['singular']))

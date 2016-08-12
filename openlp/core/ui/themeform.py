@@ -464,9 +464,9 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         Background video button pushed.
         """
-        # TODO: Check this before converting
-        visible_formats = '(%s)' % '; '.join(VIDEO_EXT)
-        actual_formats = '(%s)' % ' '.join(VIDEO_EXT)
+        # TODO: Should work
+        visible_formats = '({name})'.format(name='; '.join(VIDEO_EXT))
+        actual_formats = '({name})'.format(name=' '.join(VIDEO_EXT))
         video_filter = '{trans} {visible} {actual}'.format(trans=translate('OpenLP', 'Video Files'),
                                                            visible=visible_formats, actual=actual_formats)
         video_filter = '{video};;{ui} (*.*)'.format(video=video_filter, ui=UiStrings().AllFiles)

@@ -88,7 +88,7 @@ class ImagePlugin(Plugin):
         self.text_strings[StringContent.VisibleName] = {'title': translate('ImagePlugin', 'Images', 'container title')}
         # Middle Header Bar
         tooltips = {
-            'load': translate('ImagePlugin', 'Load a new image.'),
+            'load': translate('ImagePlugin', 'Add new image(s).'),
             'import': '',
             'new': translate('ImagePlugin', 'Add a new image.'),
             'edit': translate('ImagePlugin', 'Edit the selected image.'),

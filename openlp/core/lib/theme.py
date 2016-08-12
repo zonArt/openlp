@@ -514,8 +514,8 @@ class ThemeXML(object):
         theme_strings = []
         for key in dir(self):
             if key[0:1] != '_':
-                # TODO: Verify spacing format before converting to python3 string
-                theme_strings.append('%30s: %s' % (key, getattr(self, key)))
+                # TODO: Due to bound methods returned, I don't know how to write a proper test
+                theme_strings.append('{key:>30}: {value}'.format(key=key, value=getattr(self, key)))
         return '\n'.join(theme_strings)
 
     def _build_xml_from_attrs(self):

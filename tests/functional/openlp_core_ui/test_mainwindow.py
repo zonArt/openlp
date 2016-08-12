@@ -110,9 +110,9 @@ class TestMainWindow(TestCase, TestMixin):
 
         # WHEN no changes are made to the service
 
-        # THEN the main window's title shoud be the same as the OLPV2x string in the UiStrings class
-        self.assertEqual(self.main_window.windowTitle(), UiStrings().OLPV2x,
-                         'The main window\'s title should be the same as the OLPV2x string in UiStrings class')
+        # THEN the main window's title shoud be the same as the OLP string in the UiStrings class
+        self.assertEqual(self.main_window.windowTitle(), UiStrings().OLP,
+                         'The main window\'s title should be the same as the OLP string in UiStrings class')
 
     def test_set_service_modifed(self):
         """
@@ -124,8 +124,8 @@ class TestMainWindow(TestCase, TestMixin):
         self.main_window.set_service_modified(True, 'test.osz')
 
         # THEN the main window's title should be set to the
-        self.assertEqual(self.main_window.windowTitle(), '%s - %s*' % (UiStrings().OLPV2x, 'test.osz'),
-                         'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz*"')
+        self.assertEqual(self.main_window.windowTitle(), '%s - %s*' % (UiStrings().OLP, 'test.osz'),
+                         'The main window\'s title should be set to "<the contents of UiStrings().OLP> - test.osz*"')
 
     def test_set_service_unmodified(self):
         """
@@ -137,8 +137,8 @@ class TestMainWindow(TestCase, TestMixin):
         self.main_window.set_service_modified(False, 'test.osz')
 
         # THEN the main window's title should be set to the
-        self.assertEqual(self.main_window.windowTitle(), '%s - %s' % (UiStrings().OLPV2x, 'test.osz'),
-                         'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz"')
+        self.assertEqual(self.main_window.windowTitle(), '%s - %s' % (UiStrings().OLP, 'test.osz'),
+                         'The main window\'s title should be set to "<the contents of UiStrings().OLP> - test.osz"')
 
     def test_mainwindow_configuration(self):
         """

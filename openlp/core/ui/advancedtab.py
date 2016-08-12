@@ -255,15 +255,15 @@ class AdvancedTab(SettingsTab):
         self.tab_title_visible = UiStrings().Advanced
         self.ui_group_box.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.data_directory_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Data Location'))
-        self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
+        self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent service files to display:'))
         self.media_plugin_check_box.setText(translate('OpenLP.AdvancedTab',
-                                                      'Remember active media manager tab on startup'))
+                                                      'Open the last used Library tab on startup'))
         self.double_click_live_check_box.setText(translate('OpenLP.AdvancedTab',
-                                                           'Double-click to send items straight to live'))
+                                                           'Double-click to send items straight to Live'))
         self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
-                                                              'Preview items when clicked in Media Manager'))
+                                                              'Preview items when clicked in Library'))
         self.single_click_service_preview_check_box.setText(translate('OpenLP.AdvancedTab',
-                                                                      'Preview items when clicked in Service Manager'))
+                                                                      'Preview items when clicked in Service'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
                                                              'Expand new service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',

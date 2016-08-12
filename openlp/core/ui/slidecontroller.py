@@ -87,6 +87,8 @@ class DisplayController(QtWidgets.QWidget):
         self.is_live = False
         self.display = None
         self.controller_type = None
+        Registry().set_flag('has doubleclick added item to service', True)
+        Registry().set_flag('replace service manager item', False)
 
     def send_to_plugins(self, *args):
         """
@@ -289,7 +291,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.delay_spin_box = QtWidgets.QSpinBox()
             self.delay_spin_box.setObjectName('delay_spin_box')
             self.delay_spin_box.setRange(1, 180)
-            self.delay_spin_box.setSuffix(UiStrings().Seconds)
+            self.delay_spin_box.setSuffix(' {unit}'.format(unit=UiStrings().Seconds))
             self.delay_spin_box.setToolTip(translate('OpenLP.SlideController', 'Delay between slides in seconds.'))
             self.receive_spin_delay()
             self.toolbar.add_toolbar_widget(self.delay_spin_box)
@@ -796,12 +798,15 @@ class SlideController(DisplayController, RegistryProperties):
 
     def replace_service_manager_item(self, item):
         """
-        Replacement item following a remote edit
+        Replacement item following a remote edit.
+        This action  also takes place when a song that is sent to live from Service Manager is edited.
 
         :param item: The current service item
         """
         if item == self.service_item:
+            Registry().set_flag('replace service manager item', True)
             self._process_item(item, self.preview_widget.current_slide_number())
+            Registry().set_flag('replace service manager item', False)
 
     def add_service_manager_item(self, item, slide_no):
         """
@@ -970,9 +975,10 @@ class SlideController(DisplayController, RegistryProperties):
 
     def on_slide_unblank(self):
         """
-        Handle the slidecontroller unblank event
+        Handle the slidecontroller unblank event.
         """
-        self.on_blank_display(False)
+        if not Registry().get_flag('replace service manager item') is True:
+            self.on_blank_display(False)
 
     def on_blank_display(self, checked=None):
         """
@@ -1103,6 +1109,11 @@ class SlideController(DisplayController, RegistryProperties):
                 self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
                                % timeout)
             return
+        # If "click live slide to unblank" is enabled, unblank the display. And start = Item is sent to Live.
+        # Note: If this if statement is placed at the bottom of this function instead of top slide transitions are lost.
+        if self.is_live and Settings().value('core/click live slide to unblank'):
+            if not start:
+                Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
         old_selected_row = self.selected_row
         self.selected_row = 0
@@ -1285,6 +1296,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
             self.play_slides_menu.setDefaultAction(self.play_slides_loop)
             self.play_slides_once.setChecked(False)
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
@@ -1308,6 +1321,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
             self.play_slides_menu.setDefaultAction(self.play_slides_once)
             self.play_slides_loop.setChecked(False)
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_once.setIcon(build_icon(':/media/media_time'))
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
@@ -1362,7 +1377,7 @@ class SlideController(DisplayController, RegistryProperties):
         Triggered when a preview slide item is doubleclicked
         """
         if self.service_item:
-            if Settings().value('advanced/double click live'):
+            if Settings().value('advanced/double click live') and Settings().value('core/auto unblank'):
                 # Live and Preview have issues if we have video or presentations
                 # playing in both at the same time.
                 if self.service_item.is_command():
@@ -1371,8 +1386,13 @@ class SlideController(DisplayController, RegistryProperties):
                 if self.service_item.is_media():
                     self.on_media_close()
                 self.on_go_live()
-            else:
+            # If ('advanced/double click live') is not enabled, double clicking preview adds the item to Service.
+            # Prevent same item in preview from being sent to Service multiple times.
+            # Changing the preview slide resets this flag to False.
+            # Do note that this still allows to add item to Service multiple times if icon is clicked.
+            elif not Registry().get_flag('has doubleclick added item to service') is True:
                 self.on_preview_add_to_service()
+                Registry().set_flag('has doubleclick added item to service', True)
 
     def on_go_live(self, field=None):
         """
