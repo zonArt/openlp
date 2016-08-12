@@ -20,9 +20,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-    :mod: `openlp.core.ui.projector.sourceselectform` module
+:mod: `openlp.core.ui.projector.sourceselectform` module
 
-    Provides the dialog window for selecting video source for projector.
+Provides the dialog window for selecting video source for projector.
 """
 import logging
 
@@ -34,7 +34,6 @@ from openlp.core.lib.projector.db import ProjectorSource
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES, PJLINK_DEFAULT_CODES
 
 log = logging.getLogger(__name__)
-log.debug('editform loaded')
 
 
 def source_group(inputs, source_text):
@@ -270,7 +269,6 @@ class SourceSelectTabs(QtWidgets.QDialog):
         self.projector = projector
         self.source_text = self.projectordb.get_source_list(projector=projector)
         self.source_group = source_group(projector.source_available, self.source_text)
-        # self.source_group = {'4': {'41': 'Storage 1'}, '5': {"51": 'Network 1'}}
         self.button_group = [] if self.edit else QtWidgets.QButtonGroup()
         keys = list(self.source_group.keys())
         keys.sort()
