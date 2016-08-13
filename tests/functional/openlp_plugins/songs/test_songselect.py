@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+# pylint: disable=protected-access
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -650,7 +651,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         # WHEN: _update_login_progress() is called
         with patch.object(ssform, 'login_progress_bar') as mocked_login_progress_bar:
             mocked_login_progress_bar.value.return_value = 3
-            ssform._update_login_progress()                                     # pylint: disable=protected-access
+            ssform._update_login_progress()
 
         # THEN: The login progress bar should be updated
         mocked_login_progress_bar.setValue.assert_called_with(4)
@@ -665,7 +666,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         # WHEN: _update_song_progress() is called
         with patch.object(ssform, 'song_progress_bar') as mocked_song_progress_bar:
             mocked_song_progress_bar.value.return_value = 2
-            ssform._update_song_progress()                                      # pylint: disable=protected-access
+            ssform._update_song_progress()
 
         # THEN: The song progress bar should be updated
         mocked_song_progress_bar.setValue.assert_called_with(3)
@@ -822,7 +823,7 @@ class TestSearchWorker(TestCase, TestMixin):
             worker.start()
 
         # THEN: The "finished" and "quit" signals should be emitted
-        importer.search.assert_called_with(search_text, 1000, worker._found_song_callback)  # pylint: disable=protected-access
+        importer.search.assert_called_with(search_text, 1000, worker._found_song_callback)
         mocked_finished.emit.assert_called_with()
         mocked_quit.emit.assert_called_with()
 
@@ -844,7 +845,7 @@ class TestSearchWorker(TestCase, TestMixin):
             worker.start()
 
         # THEN: The "finished" and "quit" signals should be emitted
-        importer.search.assert_called_with(search_text, 1000, worker._found_song_callback)  # pylint: disable=protected-access
+        importer.search.assert_called_with(search_text, 1000, worker._found_song_callback)
         mocked_show_info.emit.assert_called_with('More than 1000 results', 'Your search has returned more than 1000 '
                                                                            'results, it has been stopped. Please '
                                                                            'refine your search to fetch better '

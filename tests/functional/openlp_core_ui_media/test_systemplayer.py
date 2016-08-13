@@ -32,6 +32,7 @@ from openlp.core.ui.media.systemplayer import SystemPlayer, CheckMediaWorker, AD
 
 from tests.functional import MagicMock, call, patch
 
+
 class TestSystemPlayer(TestCase):
     """
     Test the system media player
