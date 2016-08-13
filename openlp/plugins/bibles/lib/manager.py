@@ -26,13 +26,13 @@ import os
 from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file, UiStrings
 from openlp.plugins.bibles.lib import parse_reference, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-from .csvbible import CSVBible
-from .http import HTTPBible
-from .opensong import OpenSongBible
-from .osis import OSISBible
-from .zefania import ZefaniaBible
+from .importers.csvbible import CSVBible
+from .importers.http import HTTPBible
+from .importers.opensong import OpenSongBible
+from .importers.osis import OSISBible
+from .importers.zefania import ZefaniaBible
 try:
-    from .sword import SwordBible
+    from .importers.sword import SwordBible
 except:
     pass
 
@@ -124,7 +124,6 @@ class BibleManager(RegistryProperties):
             files.remove('alternative_book_names.sqlite')
         log.debug('Bible Files {text}'.format(text=files))
         self.db_cache = {}
-        self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             if not bible.session:

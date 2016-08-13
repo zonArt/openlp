@@ -26,7 +26,7 @@ from unittest import TestCase
 from bs4 import BeautifulSoup
 
 from tests.functional import patch, MagicMock
-from openlp.plugins.bibles.lib.http import BSExtract
+from openlp.plugins.bibles.lib.importers.http import BSExtract
 
 # TODO: Items left to test
 #   BGExtract
@@ -68,11 +68,11 @@ class TestBSExtract(TestCase):
     #       get_books_from_http
     #       _get_application
     def setUp(self):
-        self.get_soup_for_bible_ref_patcher = patch('openlp.plugins.bibles.lib.http.get_soup_for_bible_ref')
-        self.log_patcher = patch('openlp.plugins.bibles.lib.http.log')
-        self.send_error_message_patcher = patch('openlp.plugins.bibles.lib.http.send_error_message')
-        self.socket_patcher = patch('openlp.plugins.bibles.lib.http.socket')
-        self.urllib_patcher = patch('openlp.plugins.bibles.lib.http.urllib')
+        self.get_soup_for_bible_ref_patcher = patch('openlp.plugins.bibles.lib.importers.http.get_soup_for_bible_ref')
+        self.log_patcher = patch('openlp.plugins.bibles.lib.importers.http.log')
+        self.send_error_message_patcher = patch('openlp.plugins.bibles.lib.importers.http.send_error_message')
+        self.socket_patcher = patch('openlp.plugins.bibles.lib.importers.http.socket')
+        self.urllib_patcher = patch('openlp.plugins.bibles.lib.importers.http.urllib')
 
         self.mock_get_soup_for_bible_ref = self.get_soup_for_bible_ref_patcher.start()
         self.mock_log = self.log_patcher.start()

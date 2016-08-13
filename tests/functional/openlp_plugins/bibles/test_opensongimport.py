@@ -28,7 +28,7 @@ import json
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.opensong import OpenSongBible
+from openlp.plugins.bibles.lib.importers.opensong import OpenSongBible
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -72,7 +72,7 @@ class TestOpenSongImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'opensong-dk1933.xml'
-        with patch('openlp.plugins.bibles.lib.opensong.OpenSongBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.opensong.OpenSongBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
@@ -98,7 +98,7 @@ class TestOpenSongImport(TestCase):
         Test that we give an error message if trying to import a zefania bible
         """
         # GIVEN: A mocked out "manager" and mocked out critical_error_message_box and an import
-        with patch('openlp.plugins.bibles.lib.opensong.critical_error_message_box') as \
+        with patch('openlp.plugins.bibles.lib.importers.opensong.critical_error_message_box') as \
                 mocked_critical_error_message_box:
             mocked_manager = MagicMock()
             importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')

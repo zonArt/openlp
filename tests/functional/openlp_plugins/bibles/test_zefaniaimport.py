@@ -28,7 +28,7 @@ import json
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.zefania import ZefaniaBible
+from openlp.plugins.bibles.lib.importers.zefania import ZefaniaBible
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -72,7 +72,7 @@ class TestZefaniaImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'zefania-dk1933.xml'
-        with patch('openlp.plugins.bibles.lib.zefania.ZefaniaBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.zefania.ZefaniaBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
@@ -102,7 +102,7 @@ class TestZefaniaImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'rst.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'zefania-rst.xml'
-        with patch('openlp.plugins.bibles.lib.zefania.ZefaniaBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.zefania.ZefaniaBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')

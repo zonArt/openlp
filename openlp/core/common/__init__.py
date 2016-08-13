@@ -30,6 +30,7 @@ import os
 import re
 import sys
 import traceback
+from chardet.universaldetector import UniversalDetector
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from shutil import which
 from subprocess import check_output, CalledProcessError, STDOUT
@@ -416,3 +417,24 @@ def check_binary_exists(program_path):
         runlog = ''
     log.debug('check_output returned: {text}'.format(text=runlog))
     return runlog
+
+
+def get_file_encoding(filename):
+    """
+    Utility function to incrementally detect the file encoding.
+
+    :param filename: Filename for the file to determine the encoding for. Str
+    :return: A dict with the keys 'encoding' and 'confidence'
+    """
+    detector = UniversalDetector()
+    try:
+        with open(filename, 'rb') as detect_file:
+            while not detector.done:
+                chunk = detect_file.read(1024)
+                if not chunk:
+                    break
+                detector.feed(chunk)
+            detector.close()
+        return detector.result
+    except OSError:
+        log.exception('Error detecting file encoding')

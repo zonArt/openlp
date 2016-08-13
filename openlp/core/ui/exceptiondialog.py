@@ -106,7 +106,7 @@ class Ui_ExceptionDialog(object):
             translate('OpenLP.ExceptionDialog', '{first_part}'
                       '<strong>No email app? </strong> You can <strong>save</strong> this '
                       'information to a <strong>file</strong> and<br>'
-                      'send it from your <strong>mail on browser</strong> via an <strong>attachement.</strong><br><br>'
+                      'send it from your <strong>mail on browser</strong> via an <strong>attachment.</strong><br><br>'
                       '<strong>Thank you<strong> for being part of making OpenLP better!<br>'
                       ).format(first_part=exception_part1))
         self.send_report_button.setText(translate('OpenLP.ExceptionDialog', 'Send E-Mail'))
