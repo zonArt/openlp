@@ -31,9 +31,8 @@ from PyQt5 import QtWidgets
 
 from openlp.core.common import AppLocation, CONTROL_CHARS
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib.db import MediaFile, Song
-from .db import Author
-from .ui import SongStrings
+from openlp.plugins.songs.lib.db import Author, MediaFile, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -315,8 +314,8 @@ def retrieve_windows_encoding(recommendation=None):
     ]
     recommended_index = -1
     if recommendation:
-        for index in range(len(encodings)):
-            if recommendation == encodings[index][0]:
+        for index, encoding in enumerate(encodings):
+            if recommendation == encoding[0]:
                 recommended_index = index
                 break
     if recommended_index > -1:
@@ -442,7 +441,7 @@ def strip_rtf(text, default_encoding=None):
     # Encoded buffer.
     ebytes = bytearray()
     for match in PATTERN.finditer(text):
-        iinu, word, arg, hex, char, brace, tchar = match.groups()
+        iinu, word, arg, hex_, char, brace, tchar = match.groups()
         # \x (non-alpha character)
         if char:
             if char in '\\{}':
@@ -450,7 +449,7 @@ def strip_rtf(text, default_encoding=None):
             else:
                 word = char
         # Flush encoded buffer to output buffer
-        if ebytes and not hex and not tchar:
+        if ebytes and not hex_ and not tchar:
             failed = False
             while True:
                 try:
@@ -507,11 +506,11 @@ def strip_rtf(text, default_encoding=None):
             elif iinu:
                 ignorable = True
         # \'xx
-        elif hex:
+        elif hex_:
             if curskip > 0:
                 curskip -= 1
             elif not ignorable:
-                ebytes.append(int(hex, 16))
+                ebytes.append(int(hex_, 16))
         elif tchar:
             if curskip > 0:
                 curskip -= 1

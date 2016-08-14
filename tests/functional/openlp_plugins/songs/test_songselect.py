@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+# pylint: disable=protected-access
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -28,14 +29,13 @@ from urllib.error import URLError
 
 from PyQt5 import QtWidgets
 
-from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.core import Registry
 from openlp.plugins.songs.forms.songselectform import SongSelectForm, SearchWorker
 from openlp.plugins.songs.lib import Song
 from openlp.plugins.songs.lib.songselect import SongSelectImport, LOGOUT_URL, BASE_URL
-from openlp.plugins.songs.lib.importers.cclifile import CCLIFileImport
 
 from tests.functional import MagicMock, patch, call
+from tests.helpers.songfileimport import SongImportTestHelper
 from tests.helpers.testmixin import TestMixin
 
 TEST_PATH = os.path.abspath(
@@ -71,7 +71,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         mocked_opener = MagicMock()
         mocked_build_opener.return_value = mocked_opener
         mocked_login_page = MagicMock()
-        mocked_login_page.find.return_value = {'value': 'blah'}
+        mocked_login_page.find.side_effect = [{'value': 'blah'}, None]
         MockedBeautifulSoup.return_value = mocked_login_page
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
@@ -112,7 +112,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         mocked_opener = MagicMock()
         mocked_build_opener.return_value = mocked_opener
         mocked_login_page = MagicMock()
-        mocked_login_page.find.side_effect = [{'value': 'blah'}, None]
+        mocked_login_page.find.side_effect = [{'value': 'blah'}, MagicMock()]
         MockedBeautifulSoup.return_value = mocked_login_page
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
@@ -165,7 +165,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(0, mock_callback.call_count, 'callback should not have been called')
         self.assertEqual(1, mocked_opener.open.call_count, 'open should have been called once')
         self.assertEqual(1, mocked_results_page.find_all.call_count, 'find_all should have been called once')
-        mocked_results_page.find_all.assert_called_with('li', 'result pane')
+        mocked_results_page.find_all.assert_called_with('div', 'song-result')
         self.assertEqual([], results, 'The search method should have returned an empty list')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
@@ -177,12 +177,18 @@ class TestSongSelectImport(TestCase, TestMixin):
         # GIVEN: A bunch of mocked out stuff and an importer object
         # first search result
         mocked_result1 = MagicMock()
-        mocked_result1.find.side_effect = [MagicMock(string='Title 1'), {'href': '/url1'}]
-        mocked_result1.find_all.return_value = [MagicMock(string='Author 1-1'), MagicMock(string='Author 1-2')]
+        mocked_result1.find.side_effect = [
+            MagicMock(find=MagicMock(return_value=MagicMock(string='Title 1'))),
+            MagicMock(string='James, John'),
+            MagicMock(find=MagicMock(return_value={'href': '/url1'}))
+        ]
         # second search result
         mocked_result2 = MagicMock()
-        mocked_result2.find.side_effect = [MagicMock(string='Title 2'), {'href': '/url2'}]
-        mocked_result2.find_all.return_value = [MagicMock(string='Author 2-1'), MagicMock(string='Author 2-2')]
+        mocked_result2.find.side_effect = [
+            MagicMock(find=MagicMock(return_value=MagicMock(string='Title 2'))),
+            MagicMock(string='Philip'),
+            MagicMock(find=MagicMock(return_value={'href': '/url2'}))
+        ]
         # rest of the stuff
         mocked_opener = MagicMock()
         mocked_build_opener.return_value = mocked_opener
@@ -199,10 +205,10 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(2, mock_callback.call_count, 'callback should have been called twice')
         self.assertEqual(2, mocked_opener.open.call_count, 'open should have been called twice')
         self.assertEqual(2, mocked_results_page.find_all.call_count, 'find_all should have been called twice')
-        mocked_results_page.find_all.assert_called_with('li', 'result pane')
+        mocked_results_page.find_all.assert_called_with('div', 'song-result')
         expected_list = [
-            {'title': 'Title 1', 'authors': ['Author 1-1', 'Author 1-2'], 'link': BASE_URL + '/url1'},
-            {'title': 'Title 2', 'authors': ['Author 2-1', 'Author 2-2'], 'link': BASE_URL + '/url2'}
+            {'title': 'Title 1', 'authors': ['James', 'John'], 'link': BASE_URL + '/url1'},
+            {'title': 'Title 2', 'authors': ['Philip'], 'link': BASE_URL + '/url2'}
         ]
         self.assertListEqual(expected_list, results, 'The search method should have returned two songs')
 
@@ -215,16 +221,25 @@ class TestSongSelectImport(TestCase, TestMixin):
         # GIVEN: A bunch of mocked out stuff and an importer object
         # first search result
         mocked_result1 = MagicMock()
-        mocked_result1.find.side_effect = [MagicMock(string='Title 1'), {'href': '/url1'}]
-        mocked_result1.find_all.return_value = [MagicMock(string='Author 1-1'), MagicMock(string='Author 1-2')]
+        mocked_result1.find.side_effect = [
+            MagicMock(find=MagicMock(return_value=MagicMock(string='Title 1'))),
+            MagicMock(string='James, John'),
+            MagicMock(find=MagicMock(return_value={'href': '/url1'}))
+        ]
         # second search result
         mocked_result2 = MagicMock()
-        mocked_result2.find.side_effect = [MagicMock(string='Title 2'), {'href': '/url2'}]
-        mocked_result2.find_all.return_value = [MagicMock(string='Author 2-1'), MagicMock(string='Author 2-2')]
+        mocked_result2.find.side_effect = [
+            MagicMock(find=MagicMock(return_value=MagicMock(string='Title 2'))),
+            MagicMock(string='Philip'),
+            MagicMock(find=MagicMock(return_value={'href': '/url2'}))
+        ]
         # third search result
         mocked_result3 = MagicMock()
-        mocked_result3.find.side_effect = [MagicMock(string='Title 3'), {'href': '/url3'}]
-        mocked_result3.find_all.return_value = [MagicMock(string='Author 3-1'), MagicMock(string='Author 3-2')]
+        mocked_result3.find.side_effect = [
+            MagicMock(find=MagicMock(return_value=MagicMock(string='Title 3'))),
+            MagicMock(string='Luke, Matthew'),
+            MagicMock(find=MagicMock(return_value={'href': '/url3'}))
+        ]
         # rest of the stuff
         mocked_opener = MagicMock()
         mocked_build_opener.return_value = mocked_opener
@@ -241,9 +256,9 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(2, mock_callback.call_count, 'callback should have been called twice')
         self.assertEqual(2, mocked_opener.open.call_count, 'open should have been called twice')
         self.assertEqual(2, mocked_results_page.find_all.call_count, 'find_all should have been called twice')
-        mocked_results_page.find_all.assert_called_with('li', 'result pane')
-        expected_list = [{'title': 'Title 1', 'authors': ['Author 1-1', 'Author 1-2'], 'link': BASE_URL + '/url1'},
-                         {'title': 'Title 2', 'authors': ['Author 2-1', 'Author 2-2'], 'link': BASE_URL + '/url2'}]
+        mocked_results_page.find_all.assert_called_with('div', 'song-result')
+        expected_list = [{'title': 'Title 1', 'authors': ['James', 'John'], 'link': BASE_URL + '/url1'},
+                         {'title': 'Title 2', 'authors': ['Philip'], 'link': BASE_URL + '/url2'}]
         self.assertListEqual(expected_list, results, 'The search method should have returned two songs')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
@@ -337,7 +352,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertIsNotNone(result, 'The get_song() method should have returned a song dictionary')
         self.assertEqual(2, mocked_lyrics_page.find.call_count, 'The find() method should have been called twice')
         self.assertEqual(2, mocked_find_all.call_count, 'The find_all() method should have been called twice')
-        self.assertEqual([call('section', 'lyrics'), call('section', 'lyrics')],
+        self.assertEqual([call('div', 'song-viewer lyrics'), call('div', 'song-viewer lyrics')],
                          mocked_lyrics_page.find.call_args_list,
                          'The find() method should have been called with the right arguments')
         self.assertEqual([call('p'), call('h3')], mocked_find_all.call_args_list,
@@ -348,8 +363,9 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(3, len(result['verses']), 'Three verses should have been returned')
 
     @patch('openlp.plugins.songs.lib.songselect.clean_song')
+    @patch('openlp.plugins.songs.lib.songselect.Topic')
     @patch('openlp.plugins.songs.lib.songselect.Author')
-    def test_save_song_new_author(self, MockedAuthor, mocked_clean_song):
+    def test_save_song_new_author(self, MockedAuthor, MockedTopic, mocked_clean_song):
         """
         Test that saving a song with a new author performs the correct actions
         """
@@ -366,6 +382,7 @@ class TestSongSelectImport(TestCase, TestMixin):
             'ccli_number': '123456'
         }
         MockedAuthor.display_name.__eq__.return_value = False
+        MockedTopic.name.__eq__.return_value = False
         mocked_db_manager = MagicMock()
         mocked_db_manager.get_object_filtered.return_value = None
         importer = SongSelectImport(mocked_db_manager)
@@ -848,7 +865,7 @@ class TestSearchWorker(TestCase, TestMixin):
 
         # WHEN: The start() method is called
         with patch.object(worker, 'found_song') as mocked_found_song:
-            worker._found_song_callback(song)
+            worker._found_song_callback(song)                                   # pylint: disable=protected-access
 
         # THEN: The "found_song" signal should have been emitted
         mocked_found_song.emit.assert_called_with(song)

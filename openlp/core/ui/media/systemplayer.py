@@ -83,17 +83,17 @@ class SystemPlayer(MediaPlayer):
             elif mime_type.startswith('video/'):
                 self._add_to_list(self.video_extensions_list, mime_type)
 
-    def _add_to_list(self, mime_type_list, mimetype):
+    def _add_to_list(self, mime_type_list, mime_type):
         """
         Add mimetypes to the provided list
         """
         # Add all extensions which mimetypes provides us for supported types.
-        extensions = mimetypes.guess_all_extensions(str(mimetype))
+        extensions = mimetypes.guess_all_extensions(mime_type)
         for extension in extensions:
             ext = '*%s' % extension
             if ext not in mime_type_list:
                 mime_type_list.append(ext)
-        log.info('MediaPlugin: %s extensions: %s' % (mimetype, ' '.join(extensions)))
+        log.info('MediaPlugin: %s extensions: %s', mime_type, ' '.join(extensions))
 
     def setup(self, display):
         """
@@ -284,25 +284,25 @@ class SystemPlayer(MediaPlayer):
         :return: True if file can be played otherwise False
         """
         thread = QtCore.QThread()
-        check_media_player = CheckMedia(path)
-        check_media_player.setVolume(0)
-        check_media_player.moveToThread(thread)
-        check_media_player.finished.connect(thread.quit)
-        thread.started.connect(check_media_player.play)
+        check_media_worker = CheckMediaWorker(path)
+        check_media_worker.setVolume(0)
+        check_media_worker.moveToThread(thread)
+        check_media_worker.finished.connect(thread.quit)
+        thread.started.connect(check_media_worker.play)
         thread.start()
         while thread.isRunning():
             self.application.processEvents()
-        return check_media_player.result
+        return check_media_worker.result
 
 
-class CheckMedia(QtMultimedia.QMediaPlayer):
+class CheckMediaWorker(QtMultimedia.QMediaPlayer):
     """
     Class used to check if a media file is playable
     """
     finished = QtCore.pyqtSignal()
 
     def __init__(self, path):
-        super(CheckMedia, self).__init__(None, QtMultimedia.QMediaPlayer.VideoSurface)
+        super(CheckMediaWorker, self).__init__(None, QtMultimedia.QMediaPlayer.VideoSurface)
         self.result = None
 
         self.error.connect(functools.partial(self.signals, 'error'))
