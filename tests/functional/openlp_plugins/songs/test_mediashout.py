@@ -221,4 +221,3 @@ class TestMediaShoutImport(TestCase):
             'Amazing grace, how sweet the sound\nThat saved a wretch like me', 'V1')
         self.assertEqual(['V1'], importer.verse_order_list)
         mocked_finish.assert_called_once_with()
-
