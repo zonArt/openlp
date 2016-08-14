@@ -29,8 +29,10 @@ from lxml import etree, objectify
 from unittest import TestCase
 
 from openlp.core.common.languages import Language
+from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from tests.functional import MagicMock, patch
+from openlp.plugins.bibles.lib.db import BibleDB
+from tests.functional import ANY, MagicMock, patch
 
 
 class TestBibleImport(TestCase):
@@ -39,22 +41,78 @@ class TestBibleImport(TestCase):
     """
 
     def setUp(self):
-        test_file = BytesIO(b'<?xml version="1.0" encoding="UTF-8" ?>\n'
-                            b'<root>\n'
-                            b'    <data><div>Test<p>data</p><a>to</a>keep</div></data>\n'
-                            b'    <data><unsupported>Test<x>data</x><y>to</y>discard</unsupported></data>\n'
-                            b'</root>')
+        test_file = BytesIO(
+            b'<?xml version="1.0" encoding="UTF-8" ?>\n'
+            b'<root>\n'
+            b'    <data><div>Test<p>data</p><a>to</a>keep</div></data>\n'
+            b'    <data><unsupported>Test<x>data</x><y>to</y>discard</unsupported></data>\n'
+            b'</root>'
+        )
         self.file_patcher = patch('builtins.open', return_value=test_file)
-        self.log_patcher = patch('openlp.plugins.bibles.lib.bibleimport.log')
-        self.setup_patcher = patch('openlp.plugins.bibles.lib.db.BibleDB._setup')
-
         self.addCleanup(self.file_patcher.stop)
-        self.addCleanup(self.log_patcher.stop)
-        self.addCleanup(self.setup_patcher.stop)
-
         self.file_patcher.start()
+        self.log_patcher = patch('openlp.plugins.bibles.lib.bibleimport.log')
+        self.addCleanup(self.log_patcher.stop)
         self.mock_log = self.log_patcher.start()
+        self.setup_patcher = patch('openlp.plugins.bibles.lib.db.BibleDB._setup')
+        self.addCleanup(self.setup_patcher.stop)
         self.setup_patcher.start()
+
+    def init_kwargs_none_test(self):
+        """
+        Test the initialisation of the BibleImport Class when no key word arguments are supplied
+        """
+        # GIVEN: A patched BibleDB._setup, BibleImport class and mocked parent
+        # WHEN: Creating an instance of BibleImport with no key word arguments
+        instance = BibleImport(MagicMock())
+
+        # THEN: The filename attribute should be None
+        self.assertIsNone(instance.filename)
+        self.assertIsInstance(instance, BibleDB)
+
+    def init_kwargs_set_test(self):
+        """
+        Test the initialisation of the BibleImport Class when supplied with select keyword arguments
+        """
+        # GIVEN: A patched BibleDB._setup, BibleImport class and mocked parent
+        # WHEN: Creating an instance of BibleImport with selected key word arguments
+        kwargs = {'filename': 'bible.xml'}
+        instance = BibleImport(MagicMock(), **kwargs)
+
+        # THEN: The filename keyword should be set to bible.xml
+        self.assertEqual(instance.filename, 'bible.xml')
+        self.assertIsInstance(instance, BibleDB)
+
+    def check_for_compression_test(self):
+        """
+        Test the check_for_compression method when called with a path to an uncompressed file
+        """
+        # GIVEN: A mocked is_zipfile which returns False and an instance of BibleImport
+        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=False) as mocked_is_zip:
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling check_for_compression
+            result = instance.check_for_compression('filename.tst')
+
+            # THEN: None should be returned
+            self.assertIsNone(result)
+            mocked_is_zip.assert_called_once_with('filename.tst')
+
+    def check_for_compression_zip_file_test(self):
+        """
+        Test the check_for_compression method when called with a path to a compressed file
+        """
+        # GIVEN: A patched is_zipfile which returns True and an instance of BibleImport
+        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=True),\
+                patch('openlp.plugins.bibles.lib.bibleimport.critical_error_message_box') as mocked_message_box:
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling check_for_compression
+            # THEN: A Validation error should be raised and the user should be notified.
+            with self.assertRaises(ValidationError) as context:
+                instance.check_for_compression('filename.tst')
+            self.assertTrue(mocked_message_box.called)
+            self.assertEqual(context.exception.msg, '"filename.tst" is compressed')
 
     def get_language_id_language_found_test(self):
         """
@@ -81,8 +139,7 @@ class TestBibleImport(TestCase):
         Test get_language_id() when called with a name not found in the languages list
         """
         # GIVEN: A mocked languages.get_language which returns language and an instance of BibleImport
-        with patch('openlp.core.common.languages.get_language', return_value=None) \
-                as mocked_languages_get_language, \
+        with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
                 patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=20) as mocked_db_get_language:
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()

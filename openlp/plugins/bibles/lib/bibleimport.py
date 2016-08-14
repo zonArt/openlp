@@ -35,7 +35,6 @@ class BibleImport(OpenLPMixin, BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
-    # TODO: Test
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
