@@ -243,7 +243,7 @@ class TestSlideController(TestCase):
         mocked_service_item = MagicMock()
         mocked_service_item.from_service = False
         mocked_preview_widget.current_slide_number.return_value = 1
-        mocked_preview_widget.slide_count.return_value = 2
+        mocked_preview_widget.slide_count = MagicMock(return_value=2)
         mocked_live_controller.preview_widget = MagicMock()
         Registry.create()
         Registry().register('live_controller', mocked_live_controller)
@@ -273,7 +273,7 @@ class TestSlideController(TestCase):
         mocked_service_item.from_service = True
         mocked_service_item.unique_identifier = 42
         mocked_preview_widget.current_slide_number.return_value = 1
-        mocked_preview_widget.slide_count.return_value = 2
+        mocked_preview_widget.slide_count = MagicMock(return_value=2)
         mocked_live_controller.preview_widget = MagicMock()
         Registry.create()
         Registry().register('live_controller', mocked_live_controller)
