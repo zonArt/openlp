@@ -240,7 +240,7 @@ class TestCSVImport(TestCase):
             importer.wizard = MagicMock()
 
             # WHEN: Calling process_verses
-            result = importer.process_verses([], [])
+            result = importer.process_verses(['Dummy Verse'], [])
 
             # THEN: get_book_name should not be called and the return value should be None
             self.assertFalse(importer.get_book_name.called)

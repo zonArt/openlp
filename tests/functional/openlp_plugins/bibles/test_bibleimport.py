@@ -83,37 +83,6 @@ class TestBibleImport(TestCase):
         self.assertEqual(instance.filename, 'bible.xml')
         self.assertIsInstance(instance, BibleDB)
 
-    def check_for_compression_test(self):
-        """
-        Test the check_for_compression method when called with a path to an uncompressed file
-        """
-        # GIVEN: A mocked is_zipfile which returns False and an instance of BibleImport
-        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=False) as mocked_is_zip:
-            instance = BibleImport(MagicMock())
-
-            # WHEN: Calling check_for_compression
-            result = instance.check_for_compression('filename.tst')
-
-            # THEN: None should be returned
-            self.assertIsNone(result)
-            mocked_is_zip.assert_called_once_with('filename.tst')
-
-    def check_for_compression_zip_file_test(self):
-        """
-        Test the check_for_compression method when called with a path to a compressed file
-        """
-        # GIVEN: A patched is_zipfile which returns True and an instance of BibleImport
-        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=True),\
-                patch('openlp.plugins.bibles.lib.bibleimport.critical_error_message_box') as mocked_message_box:
-            instance = BibleImport(MagicMock())
-
-            # WHEN: Calling check_for_compression
-            # THEN: A Validation error should be raised and the user should be notified.
-            with self.assertRaises(ValidationError) as context:
-                instance.check_for_compression('filename.tst')
-            self.assertTrue(mocked_message_box.called)
-            self.assertEqual(context.exception.msg, '"filename.tst" is compressed')
-
     def get_language_id_language_found_test(self):
         """
         Test get_language_id() when called with a name found in the languages list
