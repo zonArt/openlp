@@ -23,9 +23,11 @@
 import logging
 
 from lxml import etree, objectify
+from zipfile import is_zipfile
 
 from openlp.core.common import OpenLPMixin, languages
-from openlp.core.lib import ValidationError
+from openlp.core.lib import ValidationError, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -38,6 +40,21 @@ class BibleImport(OpenLPMixin, BibleDB):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
+
+    @staticmethod
+    def is_compressed(file):
+        """
+        Check if the supplied file is compressed
+
+        :param file: A path to the file to check
+        """
+        if is_zipfile(file):
+            critical_error_message_box(
+                message=translate('BiblesPlugin.BibleImport',
+                                  'The file "{file}" you supplied is compressed. You must decompress it before import.'
+                                  ).format(file=file))
+            return True
+        return False
 
     def get_language_id(self, file_language=None, bible_name=None):
         """

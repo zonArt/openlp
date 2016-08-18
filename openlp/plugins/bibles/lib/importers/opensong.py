@@ -21,12 +21,12 @@
 ###############################################################################
 
 import logging
-from lxml import etree, objectify
+from lxml import etree
 
 from openlp.core.common import translate, trace_error_handler
+from openlp.core.lib.exceptions import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
@@ -51,12 +51,69 @@ class OpenSongBible(BibleImport):
             verse_text += element.tail
         return verse_text
 
+    @staticmethod
+    def process_chapter_no(number, previous_number):
+        """
+        Process the chapter number
+
+        :param number: The raw data from the xml
+        :param previous_number: The previous chapter number
+        :return: Number of current chapter. (Int)
+        """
+        if number:
+            return int(number.split()[-1])
+        return previous_number + 1
+
+    @staticmethod
+    def process_verse_no(number, previous_number):
+        """
+        Process the verse number retrieved from the xml
+
+        :param number: The raw data from the xml
+        :param previous_number: The previous verse number
+        :return: Number of current verse. (Int)
+        """
+        if not number:
+            return previous_number + 1
+        try:
+            return int(number)
+        except ValueError:
+            verse_parts = number.split('-')
+            if len(verse_parts) > 1:
+                number = int(verse_parts[0])
+                return number
+        except TypeError:
+            log.warning('Illegal verse number: {verse_no}'.format(verse_no=str(number)))
+        return previous_number + 1
+
+    @staticmethod
+    def validate_file(filename):
+        """
+        Validate the supplied file
+
+        :param filename: The supplied file
+        :return: True if valid. ValidationError is raised otherwise.
+        """
+        if BibleImport.is_compressed():
+            raise ValidationError(msg='Compressed file')
+        bible = BibleImport.parse_xml(filename, use_objectify=True)
+        root_tag = bible.tag.lower()
+        if root_tag != 'bible':
+            if root_tag == 'xmlbible':
+                # Zefania bibles have a root tag of XMLBIBLE". Sometimes these bibles are referred to as 'OpenSong'
+                critical_error_message_box(
+                    message=translate('BiblesPlugin.OpenSongImport',
+                                      'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
+                                      'please use the Zefania import option.'))
+            raise ValidationError(msg='Invalid xml.')
+        return True
+
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
+        self.validate_file(self.filename)
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        success = True
         try:
             bible = self.parse_xml(self.filename, use_objectify=True)
             # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
@@ -78,46 +135,21 @@ class OpenSongBible(BibleImport):
                 for chapter in book.c:
                     if self.stop_import_flag:
                         break
-                    number = chapter.attrib['n']
-                    if number:
-                        chapter_number = int(number.split()[-1])
-                    else:
-                        chapter_number += 1
+                    chapter_number = self.process_chapter_no(chapter.attrib['n'], chapter_number)
                     verse_number = 0
                     for verse in chapter.v:
                         if self.stop_import_flag:
                             break
-                        number = verse.attrib['n']
-                        if number:
-                            try:
-                                number = int(number)
-                            except ValueError:
-                                verse_parts = number.split('-')
-                                if len(verse_parts) > 1:
-                                    number = int(verse_parts[0])
-                            except TypeError:
-                                log.warning('Illegal verse number: {verse:d}'.format(verse=verse.attrib['n']))
-                            verse_number = number
-                        else:
-                            verse_number += 1
+                        verse_number = self.process_verse_no(verse.attrib['n'], verse_number)
                         self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
                     self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong',
                                                                  'Importing {name} {chapter}...'
                                                                  ).format(name=db_book.name, chapter=chapter_number))
                 self.session.commit()
             self.application.process_events()
-        except etree.XMLSyntaxError as inst:
-            trace_error_handler(log)
-            critical_error_message_box(
-                message=translate('BiblesPlugin.OpenSongImport',
-                                  'Incorrect Bible file type supplied. OpenSong Bibles may be '
-                                  'compressed. You must decompress them before import.'))
-            log.exception(inst)
-            success = False
-        except (IOError, AttributeError):
+        except (AttributeError, ValidationError, etree.XMLSyntaxError):
             log.exception('Loading Bible from OpenSong file failed')
-            success = False
+            trace_error_handler(log)
+            return False
         if self.stop_import_flag:
             return False
-        else:
-            return success
