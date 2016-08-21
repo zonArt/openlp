@@ -33,7 +33,8 @@ from tests.functional import MagicMock, patch, call
 from tests.helpers.testmixin import TestMixin
 from openlp.core.common import Registry
 from openlp.core.lib.exceptions import ValidationError
-from openlp.plugins.bibles.lib.importers.opensong import OpenSongBible
+from openlp.plugins.bibles.lib.importers.opensong import OpenSongBible, get_text, parse_chapter_number,\
+    parse_verse_number
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -75,7 +76,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         test_data = objectify.fromstring('<element></element>')
 
         # WHEN: Calling get_text
-        result = OpenSongBible.get_text(test_data)
+        result = get_text(test_data)
 
         # THEN: A blank string should be returned
         self.assertEqual(result, '')
@@ -92,7 +93,7 @@ class TestOpenSongImport(TestCase, TestMixin):
                                          '<sub_tail></sub_tail>sub_tail tail</element>')
 
         # WHEN: Calling get_text
-        result = OpenSongBible.get_text(test_data)
+        result = get_text(test_data)
 
         # THEN: The text returned should be as expected
         self.assertEqual(result, 'Element text sub_text_tail text sub_text_tail tail sub_text text sub_tail tail')
@@ -103,7 +104,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: The number 10 represented as a string
         # WHEN: Calling parse_chapter_nnumber
-        result = OpenSongBible.parse_chapter_number('10', 0)
+        result = parse_chapter_number('10', 0)
 
         # THEN: The 10 should be returned as an Int
         self.assertEqual(result, 10)
@@ -114,7 +115,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: An empty string, and the previous chapter number set as 12  and an instance of OpenSongBible
         # WHEN: Calling parse_chapter_number
-        result = OpenSongBible.parse_chapter_number('', 12)
+        result = parse_chapter_number('', 12)
 
         # THEN: parse_chapter_number should increment the previous verse number
         self.assertEqual(result, 13)
@@ -125,7 +126,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: The number 15 represented as a string and an instance of OpenSongBible
         # WHEN: Calling parse_verse_number
-        result = OpenSongBible.parse_verse_number('15', 0)
+        result = parse_verse_number('15', 0)
 
         # THEN: parse_verse_number should return the verse number
         self.assertEqual(result, 15)
@@ -136,7 +137,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: The range 24-26 represented as a string
         # WHEN: Calling parse_verse_number
-        result = OpenSongBible.parse_verse_number('24-26', 0)
+        result = parse_verse_number('24-26', 0)
 
         # THEN: parse_verse_number should return the first verse number in the range
         self.assertEqual(result, 24)
@@ -147,7 +148,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: An non numeric string represented as a string
         # WHEN: Calling parse_verse_number
-        result = OpenSongBible.parse_verse_number('invalid', 41)
+        result = parse_verse_number('invalid', 41)
 
         # THEN: parse_verse_number should increment the previous verse number
         self.assertEqual(result, 42)
@@ -158,7 +159,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: An empty string, and the previous verse number set as 14
         # WHEN: Calling parse_verse_number
-        result = OpenSongBible.parse_verse_number('', 14)
+        result = parse_verse_number('', 14)
 
         # THEN: parse_verse_number should increment the previous verse number
         self.assertEqual(result, 15)
@@ -170,7 +171,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: A mocked out log, a Tuple, and the previous verse number set as 12
         # WHEN: Calling parse_verse_number
-        result = OpenSongBible.parse_verse_number((1, 2, 3), 12)
+        result = parse_verse_number((1, 2, 3), 12)
 
         # THEN: parse_verse_number should log the verse number it was called with increment the previous verse number
         mocked_log.warning.assert_called_once_with('Illegal verse number: (1, 2, 3)')
@@ -236,14 +237,13 @@ class TestOpenSongImport(TestCase, TestMixin):
         self.assertFalse(importer.parse_chapter_number.called)
 
     @patch('openlp.plugins.bibles.lib.importers.opensong.translate', **{'side_effect': lambda x, y: y})
-    def process_chapters_completes_test(self, mocked_translate):
+    @patch('openlp.plugins.bibles.lib.importers.opensong.parse_chapter_number', **{'side_effect': [1, 2]})
+    def process_chapters_completes_test(self, mocked_parse_chapter_number, mocked_translate):
         """
         Test process_chapters when it completes
         """
         # GIVEN: An instance of OpenSongBible
         importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.parse_chapter_number = MagicMock()
-        importer.parse_chapter_number.side_effect = [1, 2]
         importer.wizard = MagicMock()
 
         # WHEN: called with some valid data
@@ -263,7 +263,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         importer.process_chapters(book, [chapter1, chapter2])
 
         # THEN: parse_chapter_number, process_verses and increment_process_bar should have been called
-        self.assertEqual(importer.parse_chapter_number.call_args_list, [call('1', 0), call('2', 1)])
+        self.assertEqual(mocked_parse_chapter_number.call_args_list, [call('1', 0), call('2', 1)])
         self.assertEqual(
             importer.process_verses.call_args_list,
             [call(book, 1, ['Chapter1 Verses']), call(book, 2, ['Chapter2 Verses'])])
@@ -285,16 +285,14 @@ class TestOpenSongImport(TestCase, TestMixin):
         # THEN: importer.parse_verse_number not have been called
         self.assertFalse(importer.parse_verse_number.called)
 
-    def process_verses_completes_test(self):
+    @patch('openlp.plugins.bibles.lib.importers.opensong.parse_verse_number', **{'side_effect': [1, 2]})
+    @patch('openlp.plugins.bibles.lib.importers.opensong.get_text', **{'side_effect': ['Verse1 Text', 'Verse2 Text']})
+    def process_verses_completes_test(self, mocked_get_text, mocked_parse_verse_number):
         """
         Test process_verses when it completes
         """
         # GIVEN: An instance of OpenSongBible
         importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.get_text = MagicMock()
-        importer.get_text.side_effect = ['Verse1 Text', 'Verse2 Text']
-        importer.parse_verse_number = MagicMock()
-        importer.parse_verse_number.side_effect = [1, 2]
         importer.wizard = MagicMock()
 
         # WHEN: called with some valid data
@@ -314,8 +312,8 @@ class TestOpenSongImport(TestCase, TestMixin):
         importer.process_verses(book, 1, [verse1, verse2])
 
         # THEN: parse_chapter_number, process_verses and increment_process_bar should have been called
-        self.assertEqual(importer.parse_verse_number.call_args_list, [call('1', 0), call('2', 1)])
-        self.assertEqual(importer.get_text.call_args_list, [call(verse1), call(verse2)])
+        self.assertEqual(mocked_parse_verse_number.call_args_list, [call('1', 0), call('2', 1)])
+        self.assertEqual(mocked_get_text.call_args_list, [call(verse1), call(verse2)])
         self.assertEqual(
             importer.create_verse.call_args_list,
             [call(1, 1, 1, 'Verse1 Text'), call(1, 1, 2, 'Verse2 Text')])
@@ -327,11 +325,12 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: A mocked is_compressed method which returns True
         mocked_is_compressed.return_value = True
+        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
         # WHEN: Calling validate_file
         # THEN: ValidationError should be raised
         with self.assertRaises(ValidationError) as context:
-            OpenSongBible.validate_file('file.name')
+            importer.validate_file('file.name')
         self.assertEqual(context.exception.msg, 'Compressed file')
 
     @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.parse_xml')
@@ -342,9 +341,10 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: Some test data with an OpenSong Bible "bible" root tag
         mocked_parse_xml.return_value = objectify.fromstring('<bible></bible>')
+        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
         # WHEN: Calling validate_file
-        result = OpenSongBible.validate_file('file.name')
+        result = importer.validate_file('file.name')
 
         # THEN: A True should be returned
         self.assertTrue(result)
@@ -358,11 +358,12 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: Some test data with a Zefinia "XMLBIBLE" root tag
         mocked_parse_xml.return_value = objectify.fromstring('<XMLBIBLE></XMLBIBLE>')
+        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
         # WHEN: Calling validate_file
         # THEN: critical_error_message_box should be called and an ValidationError should be raised
         with self.assertRaises(ValidationError) as context:
-            OpenSongBible.validate_file('file.name')
+            importer.validate_file('file.name')
         self.assertEqual(context.exception.msg, 'Invalid xml.')
         mocked_message_box.assert_called_once_with(
             message='Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the '
@@ -377,11 +378,12 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: Some test data with an invalid root tag and an instance of OpenSongBible
         mocked_parse_xml.return_value = objectify.fromstring('<song></song>')
+        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
         # WHEN: Calling validate_file
         # THEN: ValidationError should be raised, and the critical error message box should not have been called
         with self.assertRaises(ValidationError) as context:
-            OpenSongBible.validate_file('file.name')
+            importer.validate_file('file.name')
         self.assertEqual(context.exception.msg, 'Invalid xml.')
         self.assertFalse(mocked_message_box.called)
 
