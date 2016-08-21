@@ -95,6 +95,16 @@ class SystemPlayer(MediaPlayer):
                 mime_type_list.append(ext)
         log.info('MediaPlugin: %s extensions: %s', mime_type, ' '.join(extensions))
 
+    def disconnect_slots(self, signal):
+        """
+        Safely disconnect the slots from `signal`
+        """
+        try:
+            signal.disconnect()
+        except TypeError:
+            # If disconnect() is called on a signal without slots, it throws a TypeError
+            pass
+
     def setup(self, display):
         """
         Set up the player widgets
@@ -160,6 +170,7 @@ class SystemPlayer(MediaPlayer):
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
+        self.disconnect_slots(display.media_player.durationChanged)
         display.media_player.durationChanged.connect(functools.partial(self.set_duration, controller))
         self.set_state(MediaState.Playing, display)
         display.video_widget.raise_()
