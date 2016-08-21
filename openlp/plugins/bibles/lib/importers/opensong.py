@@ -42,6 +42,7 @@ class OpenSongBible(BibleImport):
         Recursively get all text in an objectify element and its child elements.
 
         :param element: An objectify element to get the text from
+        :return: The text content of the element (str)
         """
         verse_text = ''
         if element.text:
@@ -110,6 +111,12 @@ class OpenSongBible(BibleImport):
         return True
 
     def process_books(self, books):
+        """
+        Extract and create the books from the objectified xml
+
+        :param books: Objectified xml
+        :return: None
+        """
         for book in books:
             if self.stop_import_flag:
                 break
@@ -118,6 +125,13 @@ class OpenSongBible(BibleImport):
             self.session.commit()
 
     def process_chapters(self, book, chapters):
+        """
+        Extract and create the chapters from the objectified xml for the book `book`
+
+        :param book: A database Book object to add the chapters to
+        :param chapters: Objectified xml containing chapters
+        :return: None
+        """
         chapter_number = 0
         for chapter in chapters:
             if self.stop_import_flag:
@@ -129,6 +143,14 @@ class OpenSongBible(BibleImport):
                                                          ).format(name=book.name, chapter=chapter_number))
 
     def process_verses(self, book, chapter_number, verses):
+        """
+        Extract and create the verses from the objectified xml
+
+        :param book: A database Book object
+        :param chapter_number: The chapter number to add the verses to (int)
+        :param verses: Objectified xml containing verses
+        :return: None
+        """
         verse_number = 0
         for verse in verses:
             if self.stop_import_flag:
@@ -139,6 +161,9 @@ class OpenSongBible(BibleImport):
     def do_import(self, bible_name=None):
         """
         Loads an Open Song Bible from a file.
+
+        :param bible_name: The name of the bible being imported
+        :return: True if import completed, False if import was unsuccessful
         """
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
         try:
