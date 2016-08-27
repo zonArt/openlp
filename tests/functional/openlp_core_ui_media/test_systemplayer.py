@@ -107,6 +107,22 @@ class TestSystemPlayer(TestCase):
         mocked_video_widget.hide.assert_called_once_with()
         self.assertTrue(player.has_own_widget)
 
+    def test_disconnect_slots(self):
+        """
+        Test that we the disconnect slots method catches the TypeError
+        """
+        # GIVEN: A SystemPlayer class and a signal that throws a TypeError
+        player = SystemPlayer(self)
+        mocked_signal = MagicMock()
+        mocked_signal.disconnect.side_effect = \
+            TypeError('disconnect() failed between \'durationChanged\' and all its connections')
+
+        # WHEN: disconnect_slots() is called
+        player.disconnect_slots(mocked_signal)
+
+        # THEN: disconnect should have been called and the exception should have been ignored
+        mocked_signal.disconnect.assert_called_once_with()
+
     def test_check_available(self):
         """
         Test the check_available() method on SystemPlayer
@@ -198,7 +214,8 @@ class TestSystemPlayer(TestCase):
         with patch.object(player, 'get_live_state') as mocked_get_live_state, \
                 patch.object(player, 'seek') as mocked_seek, \
                 patch.object(player, 'volume') as mocked_volume, \
-                patch.object(player, 'set_state') as mocked_set_state:
+                patch.object(player, 'set_state') as mocked_set_state, \
+                patch.object(player, 'disconnect_slots') as mocked_disconnect_slots:
             mocked_get_live_state.return_value = QtMultimedia.QMediaPlayer.PlayingState
             result = player.play(mocked_display)
 
@@ -207,6 +224,7 @@ class TestSystemPlayer(TestCase):
         mocked_display.media_player.play.assert_called_once_with()
         mocked_seek.assert_called_once_with(mocked_display, 1000)
         mocked_volume.assert_called_once_with(mocked_display, 1)
+        mocked_disconnect_slots.assert_called_once_with(mocked_display.media_player.durationChanged)
         mocked_display.media_player.durationChanged.connect.assert_called_once_with('function')
         mocked_set_state.assert_called_once_with(MediaState.Playing, mocked_display)
         mocked_display.video_widget.raise_.assert_called_once_with()
