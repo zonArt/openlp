@@ -24,18 +24,13 @@ Package to test the openlp.core.ui.exeptionform package.
 """
 
 import os
-import socket
 import tempfile
-import urllib
 from unittest import TestCase
 from unittest.mock import mock_open
 
-from PyQt5.QtCore import QUrlQuery
-
 from openlp.core.common import Registry
-from openlp.core.ui.firsttimeform import FirstTimeForm
 
-from tests.functional import MagicMock, patch
+from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 
 from openlp.core.ui import exceptionform

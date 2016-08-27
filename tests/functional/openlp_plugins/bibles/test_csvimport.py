@@ -46,10 +46,10 @@ class TestCSVImport(TestCase):
 
     def setUp(self):
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
         self.addCleanup(self.manager_patcher.stop)
-        self.addCleanup(self.registry_patcher.stop)
         self.manager_patcher.start()
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
 
     def test_create_importer(self):
@@ -240,7 +240,7 @@ class TestCSVImport(TestCase):
             importer.wizard = MagicMock()
 
             # WHEN: Calling process_verses
-            result = importer.process_verses([], [])
+            result = importer.process_verses(['Dummy Verse'], [])
 
             # THEN: get_book_name should not be called and the return value should be None
             self.assertFalse(importer.get_book_name.called)

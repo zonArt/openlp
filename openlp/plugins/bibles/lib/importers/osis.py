@@ -98,7 +98,7 @@ class OSISBible(BibleImport):
             language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
             if not language_id:
                 return False
-            num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=NS))
+            no_of_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=NS))
             # Precompile a few xpath-querys
             verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
             text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
@@ -108,13 +108,8 @@ class OSISBible(BibleImport):
                 if self.stop_import_flag:
                     break
                 # Remove div-tags in the book
-                etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
-                book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
-                if not book_ref_id:
-                    log.error('Importing books from "{name}" failed'.format(name=self.filename))
-                    return False
-                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(book_details['name'], book_ref_id, book_details['testament_id'])
+                etree.strip_tags(book, '{http://www.bibletechnologies.net/2003/OSIS/namespace}div')
+                db_book = self.find_and_create_book(book.get('osisID'), no_of_books, language_id)
                 # Find out if chapter-tags contains the verses, or if it is used as milestone/anchor
                 if int(verse_in_chapter(book)) > 0:
                     # The chapter tags contains the verses

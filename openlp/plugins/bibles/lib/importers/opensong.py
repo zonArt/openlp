@@ -21,108 +21,164 @@
 ###############################################################################
 
 import logging
-from lxml import etree, objectify
+from lxml import etree
 
 from openlp.core.common import translate, trace_error_handler
+from openlp.core.lib.exceptions import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
+
+
+def get_text(element):
+    """
+    Recursively get all text in an objectify element and its child elements.
+
+    :param element: An objectify element to get the text from
+    :return: The text content of the element (str)
+    """
+    verse_text = ''
+    if element.text:
+        verse_text = element.text
+    for sub_element in element.iterchildren():
+        verse_text += get_text(sub_element)
+    if element.tail:
+        verse_text += element.tail
+    return verse_text
+
+
+def parse_chapter_number(number, previous_number):
+    """
+    Parse the chapter number
+
+    :param number: The raw data from the xml
+    :param previous_number: The previous chapter number
+    :return: Number of current chapter. (Int)
+    """
+    if number:
+        return int(number.split()[-1])
+    return previous_number + 1
+
+
+def parse_verse_number(number, previous_number):
+    """
+    Parse the verse number retrieved from the xml
+
+    :param number: The raw data from the xml
+    :param previous_number: The previous verse number
+    :return: Number of current verse. (Int)
+    """
+    if not number:
+        return previous_number + 1
+    try:
+        return int(number)
+    except ValueError:
+        verse_parts = number.split('-')
+        if len(verse_parts) > 1:
+            number = int(verse_parts[0])
+            return number
+    except TypeError:
+        log.warning('Illegal verse number: {verse_no}'.format(verse_no=str(number)))
+    return previous_number + 1
 
 
 class OpenSongBible(BibleImport):
     """
     OpenSong Bible format importer class. This class is used to import Bibles from OpenSong's XML format.
     """
-    def get_text(self, element):
+    def process_books(self, books):
         """
-        Recursively get all text in an objectify element and its child elements.
+        Extract and create the books from the objectified xml
 
-        :param element: An objectify element to get the text from
+        :param books: Objectified xml
+        :return: None
         """
-        verse_text = ''
-        if element.text:
-            verse_text = element.text
-        for sub_element in element.iterchildren():
-            verse_text += self.get_text(sub_element)
-        if element.tail:
-            verse_text += element.tail
-        return verse_text
+        for book in books:
+            if self.stop_import_flag:
+                break
+            db_book = self.find_and_create_book(str(book.attrib['n']), len(books), self.language_id)
+            self.process_chapters(db_book, book.c)
+            self.session.commit()
 
-    def do_import(self, bible_name=None):
+    def process_chapters(self, book, chapters):
         """
-        Loads a Bible from file.
+        Extract and create the chapters from the objectified xml for the book `book`
+
+        :param book: A database Book object to add the chapters to
+        :param chapters: Objectified xml containing chapters
+        :return: None
         """
-        log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        success = True
-        try:
-            bible = self.parse_xml(self.filename, use_objectify=True)
-            # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
-            if bible.tag.upper() == 'XMLBIBLE':
+        chapter_number = 0
+        for chapter in chapters:
+            if self.stop_import_flag:
+                break
+            chapter_number = parse_chapter_number(chapter.attrib['n'], chapter_number)
+            self.process_verses(book, chapter_number, chapter.v)
+            self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong',
+                                                         'Importing {name} {chapter}...'
+                                                         ).format(name=book.name, chapter=chapter_number))
+
+    def process_verses(self, book, chapter_number, verses):
+        """
+        Extract and create the verses from the objectified xml
+
+        :param book: A database Book object
+        :param chapter_number: The chapter number to add the verses to (int)
+        :param verses: Objectified xml containing verses
+        :return: None
+        """
+        verse_number = 0
+        for verse in verses:
+            if self.stop_import_flag:
+                break
+            verse_number = parse_verse_number(verse.attrib['n'], verse_number)
+            self.create_verse(book.id, chapter_number, verse_number, get_text(verse))
+
+    def validate_file(self, filename):
+        """
+        Validate the supplied file
+
+        :param filename: The supplied file
+        :return: True if valid. ValidationError is raised otherwise.
+        """
+        if BibleImport.is_compressed(filename):
+            raise ValidationError(msg='Compressed file')
+        bible = self.parse_xml(filename, use_objectify=True)
+        root_tag = bible.tag.lower()
+        if root_tag != 'bible':
+            if root_tag == 'xmlbible':
+                # Zefania bibles have a root tag of XMLBIBLE". Sometimes these bibles are referred to as 'OpenSong'
                 critical_error_message_box(
                     message=translate('BiblesPlugin.OpenSongImport',
                                       'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
                                       'please use the Zefania import option.'))
-                return False
+            raise ValidationError(msg='Invalid xml.')
+        return True
+
+    def do_import(self, bible_name=None):
+        """
+        Loads an Open Song Bible from a file.
+
+        :param bible_name: The name of the bible being imported
+        :return: True if import completed, False if import was unsuccessful
+        """
+        log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
+        try:
+            self.validate_file(self.filename)
+            bible = self.parse_xml(self.filename, use_objectify=True)
+            # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
             # No language info in the opensong format, so ask the user
-            language_id = self.get_language_id(bible_name=self.filename)
-            if not language_id:
+            self.language_id = self.get_language_id(bible_name=self.filename)
+            if not self.language_id:
                 return False
-            for book in bible.b:
-                if self.stop_import_flag:
-                    break
-                book_ref_id = self.get_book_ref_id_by_name(str(book.attrib['n']), len(bible.b), language_id)
-                if not book_ref_id:
-                    log.error('Importing books from "{name}" failed'.format(name=self.filename))
-                    return False
-                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(book.attrib['n'], book_ref_id, book_details['testament_id'])
-                chapter_number = 0
-                for chapter in book.c:
-                    if self.stop_import_flag:
-                        break
-                    number = chapter.attrib['n']
-                    if number:
-                        chapter_number = int(number.split()[-1])
-                    else:
-                        chapter_number += 1
-                    verse_number = 0
-                    for verse in chapter.v:
-                        if self.stop_import_flag:
-                            break
-                        number = verse.attrib['n']
-                        if number:
-                            try:
-                                number = int(number)
-                            except ValueError:
-                                verse_parts = number.split('-')
-                                if len(verse_parts) > 1:
-                                    number = int(verse_parts[0])
-                            except TypeError:
-                                log.warning('Illegal verse number: {verse:d}'.format(verse=verse.attrib['n']))
-                            verse_number = number
-                        else:
-                            verse_number += 1
-                        self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
-                    self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong',
-                                                                 'Importing {name} {chapter}...'
-                                                                 ).format(name=db_book.name, chapter=chapter_number))
-                self.session.commit()
+            self.process_books(bible.b)
             self.application.process_events()
-        except etree.XMLSyntaxError as inst:
-            trace_error_handler(log)
-            critical_error_message_box(
-                message=translate('BiblesPlugin.OpenSongImport',
-                                  'Incorrect Bible file type supplied. OpenSong Bibles may be '
-                                  'compressed. You must decompress them before import.'))
-            log.exception(inst)
-            success = False
-        except (IOError, AttributeError):
+        except (AttributeError, ValidationError, etree.XMLSyntaxError):
             log.exception('Loading Bible from OpenSong file failed')
-            success = False
+            trace_error_handler(log)
+            return False
         if self.stop_import_flag:
             return False
-        else:
-            return success
+        return True

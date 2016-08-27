@@ -142,7 +142,7 @@ class CSVBible(BibleImport):
         book_ptr = None
         for verse in verses:
             if self.stop_import_flag:
-                return None
+                break
             verse_book = self.get_book_name(verse.book_id_name, books)
             if book_ptr != verse_book:
                 book = self.get_book(verse_book)
