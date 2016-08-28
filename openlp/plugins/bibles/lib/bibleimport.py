@@ -25,8 +25,8 @@ import logging
 from lxml import etree, objectify
 from zipfile import is_zipfile
 
-from openlp.core.common import OpenLPMixin, languages
-from openlp.core.lib import ValidationError, translate
+from openlp.core.common import OpenLPMixin, languages, trace_error_handler, translate
+from openlp.core.lib import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -103,8 +103,7 @@ class BibleImport(OpenLPMixin, BibleDB):
                                       'importing {file}'.format(book_ref=book_ref_id, file=self.filename))
         return self.create_book(name, book_ref_id, book_details['testament_id'])
 
-    @staticmethod
-    def parse_xml(filename, use_objectify=False, elements=None, tags=None):
+    def parse_xml(self, filename, use_objectify=False, elements=None, tags=None):
         """
         Parse and clean the supplied file by removing any elements or tags we don't use.
         :param filename: The filename of the xml file to parse. Str
@@ -113,17 +112,28 @@ class BibleImport(OpenLPMixin, BibleDB):
         :param tags: A tuple of element names (Str) to remove, preserving their content.
         :return: The root element of the xml document
         """
-        with open(filename, 'rb') as import_file:
-            # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
-            # detection, and the two mechanisms together interfere with each other.
-            if not use_objectify:
-                tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
-            else:
-                tree = objectify.parse(import_file, parser=objectify.makeparser(recover=True))
-            if elements:
-                # Strip tags we don't use - remove content
-                etree.strip_elements(tree, elements, with_tail=False)
-            if tags:
-                # Strip tags we don't use - keep content
-                etree.strip_tags(tree, tags)
-            return tree.getroot()
+        try:
+            with open(filename, 'rb') as import_file:
+                # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
+                # detection, and the two mechanisms together interfere with each other.
+                if not use_objectify:
+                    tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
+                else:
+                    tree = objectify.parse(import_file, parser=objectify.makeparser(recover=True))
+                if elements or tags:
+                    self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
+                                                                 'Removing unused tags (this may take a few minutes)...'))
+                if elements:
+                    # Strip tags we don't use - remove content
+                    etree.strip_elements(tree, elements, with_tail=False)
+                if tags:
+                    # Strip tags we don't use - keep content
+                    etree.strip_tags(tree, tags)
+                return tree.getroot()
+        except OSError as e:
+            log.exception('Opening {file_name} failed.'.format(file_name=e.filename))
+            trace_error_handler(log)
+            critical_error_message_box( title='An Error Occured When Opening A File',
+                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'
+                .format(file_name=e.filename, error=e.strerror))
+        return None

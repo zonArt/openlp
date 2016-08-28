@@ -24,9 +24,9 @@ import logging
 from lxml import etree
 
 from openlp.core.common import translate, trace_error_handler
+from openlp.core.lib.exceptions import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -79,94 +79,119 @@ def replacement(match):
     return match.group(2).upper()
 
 
+# Precompile a few xpath-querys
+verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
+text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
+
+
 class OSISBible(BibleImport):
     """
     `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
     """
+    def process_books(self, bible_data):
+        """
+
+        :param bible_data:
+        :return:
+        """
+        no_of_books = int(bible_data.xpath("count(//ns:div[@type='book'])", namespaces=NS))
+        # Find books in the bible
+        bible_books = bible_data.xpath("//ns:div[@type='book']", namespaces=NS)
+        for book in bible_books:
+            if self.stop_import_flag:
+                break
+            # Remove div-tags in the book
+            etree.strip_tags(book, '{http://www.bibletechnologies.net/2003/OSIS/namespace}div')
+            db_book = self.find_and_create_book(book.get('osisID'), no_of_books, self.language_id)
+            self.process_chapters_and_verses(db_book, book)
+            self.session.commit()
+
+    def process_chapters_and_verses(self, book, chapters):
+        """
+
+        :param book:
+        :param chapters:
+        :return:
+        """
+        # Find out if chapter-tags contains the verses, or if it is used as milestone/anchor
+        if int(verse_in_chapter(chapters)) > 0:
+            # The chapter tags contains the verses
+            for chapter in chapters:
+                chapter_number = chapter.get("osisID").split('.')[1]
+                # Find out if verse-tags contains the text, or if it is used as milestone/anchor
+                if int(text_in_verse(chapter)) == 0:
+                    # verse-tags are used as milestone
+                    for verse in chapter:
+                        # If this tag marks the start of a verse, the verse text is between this tag and
+                        # the next tag, which the "tail" attribute gives us.
+                        if verse.get('sID'):
+                            verse_number = verse.get("osisID").split('.')[2]
+                            verse_text = verse.tail
+                            if verse_text:
+                                self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
+                else:
+                    # Verse-tags contains the text
+                    for verse in chapter:
+                        verse_number = verse.get("osisID").split('.')[2]
+                        if verse.text:
+                            self.create_verse(book.id, chapter_number, verse_number, verse.text.strip())
+                self.wizard.increment_progress_bar(
+                    translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
+                    {'bookname': book.name, 'chapter': chapter_number})
+        else:
+            # The chapter tags is used as milestones. For now we assume verses is also milestones
+            chapter_number = 0
+            for element in chapters:
+                if element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}chapter' \
+                        and element.get('sID'):
+                    chapter_number = element.get("osisID").split('.')[1]
+                    self.wizard.increment_progress_bar(
+                        translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
+                        {'bookname': book.name, 'chapter': chapter_number})
+                elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse' \
+                        and element.get('sID'):
+                    # If this tag marks the start of a verse, the verse text is between this tag and
+                    # the next tag, which the "tail" attribute gives us.
+                    verse_number = element.get("osisID").split('.')[2]
+                    verse_text = element.tail
+                    if verse_text:
+                        self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
+
+    def validate_file(self, filename):
+        """
+        Validate the supplied file
+
+        :param filename: The supplied file
+        :return: True if valid. ValidationError is raised otherwise.
+        """
+        if BibleImport.is_compressed(filename):
+            raise ValidationError(msg='Compressed file')
+        bible = self.parse_xml(filename, use_objectify=True)
+        if bible is None:
+            raise ValidationError(msg='Error when opening file')
+        root_tag = bible.tag
+        tag_str = '{{{name_space}}}osis'.format(name_space=NS['ns'])
+        if root_tag != tag_str:
+            critical_error_message_box(
+                message=translate('BiblesPlugin.OpenSongImport',
+                                  'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
+                                  'please use the Zefania import option.'))
+            raise ValidationError(msg='Invalid xml.')
+        return True
+
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
-        success = True
-        try:
-            self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
-                                                         'Removing unused tags (this may take a few minutes)...'))
-            osis_bible_tree = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
-            # Find bible language]
-            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=NS)
-            language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
-            if not language_id:
-                return False
-            no_of_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=NS))
-            # Precompile a few xpath-querys
-            verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
-            text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
-            # Find books in the bible
-            bible_books = osis_bible_tree.xpath("//ns:div[@type='book']", namespaces=NS)
-            for book in bible_books:
-                if self.stop_import_flag:
-                    break
-                # Remove div-tags in the book
-                etree.strip_tags(book, '{http://www.bibletechnologies.net/2003/OSIS/namespace}div')
-                db_book = self.find_and_create_book(book.get('osisID'), no_of_books, language_id)
-                # Find out if chapter-tags contains the verses, or if it is used as milestone/anchor
-                if int(verse_in_chapter(book)) > 0:
-                    # The chapter tags contains the verses
-                    for chapter in book:
-                        chapter_number = chapter.get("osisID").split('.')[1]
-                        # Find out if verse-tags contains the text, or if it is used as milestone/anchor
-                        if int(text_in_verse(chapter)) == 0:
-                            # verse-tags are used as milestone
-                            for verse in chapter:
-                                # If this tag marks the start of a verse, the verse text is between this tag and
-                                # the next tag, which the "tail" attribute gives us.
-                                if verse.get('sID'):
-                                    verse_number = verse.get("osisID").split('.')[2]
-                                    verse_text = verse.tail
-                                    if verse_text:
-                                        self.create_verse(db_book.id, chapter_number, verse_number, verse_text.strip())
-                        else:
-                            # Verse-tags contains the text
-                            for verse in chapter:
-                                verse_number = verse.get("osisID").split('.')[2]
-                                if verse.text:
-                                    self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
-                        self.wizard.increment_progress_bar(
-                            translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                            {'bookname': db_book.name, 'chapter': chapter_number})
-                else:
-                    # The chapter tags is used as milestones. For now we assume verses is also milestones
-                    chapter_number = 0
-                    for element in book:
-                        if element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}chapter' \
-                                and element.get('sID'):
-                            chapter_number = element.get("osisID").split('.')[1]
-                            self.wizard.increment_progress_bar(
-                                translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                                {'bookname': db_book.name, 'chapter': chapter_number})
-                        elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse' \
-                                and element.get('sID'):
-                            # If this tag marks the start of a verse, the verse text is between this tag and
-                            # the next tag, which the "tail" attribute gives us.
-                            verse_number = element.get("osisID").split('.')[2]
-                            verse_text = element.tail
-                            if verse_text:
-                                self.create_verse(db_book.id, chapter_number, verse_number, verse_text.strip())
-                self.session.commit()
-            self.application.process_events()
-        except (ValueError, IOError):
-            log.exception('Loading bible from OSIS file failed')
-            trace_error_handler(log)
-            success = False
-        except etree.XMLSyntaxError as e:
-            log.exception('Loading bible from OSIS file failed')
-            trace_error_handler(log)
-            success = False
-            critical_error_message_box(message=translate('BiblesPlugin.OsisImport',
-                                                         'The file is not a valid OSIS-XML file:'
-                                                         '\n{text}').format(text=e.msg))
-        if self.stop_import_flag:
+        self.validate_file(self.filename)
+        bible = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
+        if bible is None:
             return False
-        else:
-            return success
+        # Find bible language
+        language = bible.xpath("//ns:osisText/@xml:lang", namespaces=NS)
+        self.language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
+        if not self.language_id:
+            return False
+        self.process_books(bible)
+        return not self.stop_import_flag

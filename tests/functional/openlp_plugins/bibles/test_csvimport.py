@@ -207,7 +207,6 @@ class TestCSVImport(TestCase):
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
                 patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.find_and_create_book = MagicMock()
             importer.language_id = 10
             importer.stop_import_flag = False
@@ -222,7 +221,6 @@ class TestCSVImport(TestCase):
             # 		The returned data should be a dictionary with both song's id and names.
             self.assertEqual(importer.find_and_create_book.mock_calls,
                              [call('1. Mosebog', 2, 10), call('2. Mosebog', 2, 10)])
-            importer.application.process_events.assert_called_once_with()
             self.assertDictEqual(result, {1: '1. Mosebog', 2: '2. Mosebog'})
 
     def process_verses_stopped_import_test(self):
@@ -233,7 +231,6 @@ class TestCSVImport(TestCase):
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.get_book_name = MagicMock()
             importer.session = MagicMock()
             importer.stop_import_flag = True
@@ -245,7 +242,6 @@ class TestCSVImport(TestCase):
             # THEN: get_book_name should not be called and the return value should be None
             self.assertFalse(importer.get_book_name.called)
             importer.wizard.increment_progress_bar.assert_called_once_with('Importing verses... done.')
-            importer.application.process_events.assert_called_once_with()
             self.assertIsNone(result)
 
     def process_verses_successful_test(self):
@@ -257,7 +253,6 @@ class TestCSVImport(TestCase):
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
                 patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.create_verse = MagicMock()
             importer.get_book = MagicMock(return_value=Book('1', '1', '1. Mosebog', '1Mos'))
             importer.get_book_name = MagicMock(return_value='1. Mosebog')
@@ -280,7 +275,6 @@ class TestCSVImport(TestCase):
                              [call('1', 1, 1, 'I Begyndelsen skabte Gud Himmelen og Jorden.'),
                               call('1', 1, 2, 'Og Jorden var øde og tom, og der var Mørke over Verdensdybet. '
                                               'Men Guds Ånd svævede over Vandene.')])
-            importer.application.process_events.assert_called_once_with()
 
     def do_import_invalid_language_id_test(self):
         """
@@ -299,7 +293,6 @@ class TestCSVImport(TestCase):
             # THEN: The log.exception method should have been called to show that it reached the except clause.
             # False should be returned.
             importer.get_language.assert_called_once_with('Bible Name')
-            mocked_log.exception.assert_called_once_with('Could not import CSV bible')
             self.assertFalse(result)
 
     def do_import_stop_import_test(self):

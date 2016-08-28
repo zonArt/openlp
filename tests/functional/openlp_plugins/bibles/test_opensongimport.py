@@ -387,125 +387,82 @@ class TestOpenSongImport(TestCase, TestMixin):
         self.assertEqual(context.exception.msg, 'Invalid xml.')
         self.assertFalse(mocked_message_box.called)
 
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.trace_error_handler')
-    def do_import_attribute_error_test(self, mocked_trace_error_handler, mocked_log):
+    def do_import_parse_xml_fails_test(self):
         """
-        Test do_import when an AttributeError exception is raised
+        Test do_import when parse_xml fails (returns None)
         """
-        # GIVEN: An instance of OpenSongBible and a mocked validate_file which raises an AttributeError
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock(**{'side_effect': AttributeError()})
-        importer.parse_xml = MagicMock()
+        # GIVEN: An instance of OpenSongBible and a mocked parse_xml which returns False
+        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+            patch.object(OpenSongBible, 'validate_file'), \
+            patch.object(OpenSongBible, 'parse_xml', return_value=None), \
+            patch.object(OpenSongBible, 'get_language_id') as mocked_language_id:
+            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
-        # WHEN: Calling do_import
-        result = importer.do_import()
+            # WHEN: Calling do_import
+            result = importer.do_import()
 
-        # THEN: do_import should return False after logging the exception
-        mocked_log.exception.assert_called_once_with('Loading Bible from OpenSong file failed')
-        mocked_trace_error_handler.assert_called_once_with(mocked_log)
-        self.assertFalse(result)
-        self.assertFalse(importer.parse_xml.called)
+            # THEN: do_import should return False and get_language_id should have not been called
+            self.assertFalse(result)
+            self.assertFalse(mocked_language_id.called)
 
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.trace_error_handler')
-    def do_import_validation_error_test(self, mocked_trace_error_handler, mocked_log):
-        """
-        Test do_import when an ValidationError exception is raised
-        """
-        # GIVEN: An instance of OpenSongBible and a mocked validate_file which raises an ValidationError
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock(**{'side_effect': ValidationError()})
-        importer.parse_xml = MagicMock()
-
-        # WHEN: Calling do_import
-        result = importer.do_import()
-
-        # THEN: do_import should return False after logging the exception. parse_xml should not be called.
-        mocked_log.exception.assert_called_once_with('Loading Bible from OpenSong file failed')
-        mocked_trace_error_handler.assert_called_once_with(mocked_log)
-        self.assertFalse(result)
-        self.assertFalse(importer.parse_xml.called)
-
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.trace_error_handler')
-    def do_import_xml_syntax_error_test(self, mocked_trace_error_handler, mocked_log):
-        """
-        Test do_import when an etree.XMLSyntaxError exception is raised
-        """
-        # GIVEN: An instance of OpenSongBible and a mocked validate_file which raises an etree.XMLSyntaxError
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock(**{'side_effect': etree.XMLSyntaxError(None, None, None, None)})
-        importer.parse_xml = MagicMock()
-
-        # WHEN: Calling do_import
-        result = importer.do_import()
-
-        # THEN: do_import should return False after logging the exception. parse_xml should not be called.
-        mocked_log.exception.assert_called_once_with('Loading Bible from OpenSong file failed')
-        mocked_trace_error_handler.assert_called_once_with(mocked_log)
-        self.assertFalse(result)
-        self.assertFalse(importer.parse_xml.called)
-
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    def do_import_no_language_test(self, mocked_log):
+    def do_import_no_language_test(self):
         """
         Test do_import when the user cancels the language selection dialog
         """
         # GIVEN: An instance of OpenSongBible and a mocked get_language which returns False
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock()
-        importer.parse_xml = MagicMock()
-        importer.get_language_id = MagicMock(**{'return_value': False})
-        importer.process_books = MagicMock()
+        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+                patch.object(OpenSongBible, 'validate_file'), \
+                patch.object(OpenSongBible, 'parse_xml'), \
+                patch.object(OpenSongBible, 'get_language_id', return_value=False), \
+                patch.object(OpenSongBible, 'process_books') as mocked_process_books:
+            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
-        # WHEN: Calling do_import
-        result = importer.do_import()
+            # WHEN: Calling do_import
+            result = importer.do_import()
 
-        # THEN: do_import should return False and process_books should have not been called
-        self.assertFalse(result)
-        self.assertFalse(importer.process_books.called)
+            # THEN: do_import should return False and process_books should have not been called
+            self.assertFalse(result)
+            self.assertFalse(mocked_process_books.called)
 
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    def do_import_stop_import_test(self, mocked_log):
+    def do_import_stop_import_test(self):
         """
         Test do_import when the stop_import_flag is set to True
         """
         # GIVEN: An instance of OpenSongBible and stop_import_flag set to True
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock()
-        importer.parse_xml = MagicMock()
-        importer.get_language_id = MagicMock(**{'return_value': 10})
-        importer.process_books = MagicMock()
-        importer.stop_import_flag = True
+        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+                patch.object(OpenSongBible, 'validate_file'), \
+                patch.object(OpenSongBible, 'parse_xml'), \
+                patch.object(OpenSongBible, 'get_language_id', return_value=10), \
+                patch.object(OpenSongBible, 'process_books') as mocked_process_books:
 
-        # WHEN: Calling do_import
-        result = importer.do_import()
+            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
+            importer.stop_import_flag = True
 
-        # THEN: do_import should return False and process_books should have not been called
-        self.assertFalse(result)
-        self.assertTrue(importer.application.process_events.called)
+            # WHEN: Calling do_import
+            result = importer.do_import()
 
-        self.assertTrue(importer.application.process_events.called)
+            # THEN: do_import should return False and process_books should have not been called
+            self.assertFalse(result)
+            self.assertTrue(mocked_process_books.called)
 
-    @patch('openlp.plugins.bibles.lib.importers.opensong.log')
-    def do_import_completes_test(self, mocked_log):
+    def do_import_completes_test(self):
         """
         Test do_import when it completes successfully
         """
-        # GIVEN: An instance of OpenSongBible and stop_import_flag set to True
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-        importer.validate_file = MagicMock()
-        importer.parse_xml = MagicMock()
-        importer.get_language_id = MagicMock(**{'return_value': 10})
-        importer.process_books = MagicMock()
-        importer.stop_import_flag = False
+        # GIVEN: An instance of OpenSongBible and stop_import_flag set to False
+        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+                patch.object(OpenSongBible, 'validate_file'), \
+                patch.object(OpenSongBible, 'parse_xml'), \
+                patch.object(OpenSongBible, 'get_language_id', return_value=10), \
+                patch.object(OpenSongBible, 'process_books'):
+            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
+            importer.stop_import_flag = False
 
-        # WHEN: Calling do_import
-        result = importer.do_import()
+            # WHEN: Calling do_import
+            result = importer.do_import()
 
-        # THEN: do_import should return True
-        self.assertTrue(result)
+            # THEN: do_import should return True
+            self.assertTrue(result)
 
     def test_file_import(self):
         """

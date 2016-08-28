@@ -171,9 +171,12 @@ class TestBibleImport(TestCase):
         """
         Test BibleImport.parse_xml() when called with the use_objectify default value
         """
-        # GIVEN: A sample "file" to parse
+        # GIVEN: A sample "file" to parse and an instance of BibleImport
+        instance = BibleImport(MagicMock())
+        instance.wizard = MagicMock()
+
         # WHEN: Calling parse_xml
-        result = BibleImport.parse_xml('file.tst')
+        result = instance.parse_xml('file.tst')
 
         # THEN: The result returned should contain the correct data, and should be an instance of eetree_Element
         self.assertEqual(etree.tostring(result),
@@ -185,9 +188,12 @@ class TestBibleImport(TestCase):
         """
         Test BibleImport.parse_xml() when called with use_objectify set to True
         """
-        # GIVEN: A sample "file" to parse
+        # GIVEN: A sample "file" to parse and an instance of BibleImport
+        instance = BibleImport(MagicMock())
+        instance.wizard = MagicMock()
+
         # WHEN: Calling parse_xml
-        result = BibleImport.parse_xml('file.tst', use_objectify=True)
+        result = instance.parse_xml('file.tst', use_objectify=True)
 
         # THEN: The result returned should contain the correct data, and should be an instance of ObjectifiedElement
         self.assertEqual(etree.tostring(result),
@@ -199,11 +205,13 @@ class TestBibleImport(TestCase):
         """
         Test BibleImport.parse_xml() when given a tuple of elements to remove
         """
-        # GIVEN: A tuple of elements to remove
+        # GIVEN: A tuple of elements to remove and an instance of BibleImport
         elements = ('unsupported', 'x', 'y')
+        instance = BibleImport(MagicMock())
+        instance.wizard = MagicMock()
 
         # WHEN: Calling parse_xml, with a test file
-        result = BibleImport.parse_xml('file.tst', elements=elements)
+        result = instance.parse_xml('file.tst', elements=elements)
 
         # THEN: The result returned should contain the correct data
         self.assertEqual(etree.tostring(result),
@@ -213,11 +221,14 @@ class TestBibleImport(TestCase):
         """
         Test BibleImport.parse_xml() when given a tuple of tags to remove
         """
-        # GIVEN: A tuple of tags to remove
+        # GIVEN: A tuple of tags to remove and an instance of BibleImport
         tags = ('div', 'p', 'a')
+        instance = BibleImport(MagicMock())
+        instance.wizard = MagicMock()
+
 
         # WHEN: Calling parse_xml, with a test file
-        result = BibleImport.parse_xml('file.tst', tags=tags)
+        result = instance.parse_xml('file.tst', tags=tags)
 
         # THEN: The result returned should contain the correct data
         self.assertEqual(etree.tostring(result), b'<root>\n    <data>Testdatatokeep</data>\n    <data><unsupported>Test'
@@ -227,12 +238,14 @@ class TestBibleImport(TestCase):
         """
         Test BibleImport.parse_xml() when given a tuple of elements and of tags to remove
         """
-        # GIVEN: A tuple of elements and of tags to remove
+        # GIVEN: A tuple of elements and of tags to remove and an instacne of BibleImport
         elements = ('unsupported', 'x', 'y')
         tags = ('div', 'p', 'a')
+        instance = BibleImport(MagicMock())
+        instance.wizard = MagicMock()
 
         # WHEN: Calling parse_xml, with a test file
-        result = BibleImport.parse_xml('file.tst', elements=elements, tags=tags)
+        result = instance.parse_xml('file.tst', elements=elements, tags=tags)
 
         # THEN: The result returned should contain the correct data
         self.assertEqual(etree.tostring(result), b'<root>\n    <data>Testdatatokeep</data>\n    <data/>\n</root>')

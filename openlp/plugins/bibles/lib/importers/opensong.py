@@ -23,7 +23,7 @@
 import logging
 from lxml import etree
 
-from openlp.core.common import translate, trace_error_handler
+from openlp.core.common import trace_error_handler, translate
 from openlp.core.lib.exceptions import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
@@ -146,6 +146,8 @@ class OpenSongBible(BibleImport):
         if BibleImport.is_compressed(filename):
             raise ValidationError(msg='Compressed file')
         bible = self.parse_xml(filename, use_objectify=True)
+        if bible is None:
+            raise ValidationError(msg='Error when opening file')
         root_tag = bible.tag.lower()
         if root_tag != 'bible':
             if root_tag == 'xmlbible':
@@ -165,20 +167,13 @@ class OpenSongBible(BibleImport):
         :return: True if import completed, False if import was unsuccessful
         """
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        try:
-            self.validate_file(self.filename)
-            bible = self.parse_xml(self.filename, use_objectify=True)
-            # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
-            # No language info in the opensong format, so ask the user
-            self.language_id = self.get_language_id(bible_name=self.filename)
-            if not self.language_id:
-                return False
-            self.process_books(bible.b)
-            self.application.process_events()
-        except (AttributeError, ValidationError, etree.XMLSyntaxError):
-            log.exception('Loading Bible from OpenSong file failed')
-            trace_error_handler(log)
+        self.validate_file(self.filename)
+        bible = self.parse_xml(self.filename, use_objectify=True)
+        if bible is None:
             return False
-        if self.stop_import_flag:
+        # No language info in the opensong format, so ask the user
+        self.language_id = self.get_language_id(bible_name=self.filename)
+        if not self.language_id:
             return False
-        return True
+        self.process_books(bible.b)
+        return not self.stop_import_flag
