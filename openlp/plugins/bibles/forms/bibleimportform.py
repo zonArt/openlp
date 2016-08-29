@@ -813,7 +813,7 @@ class BibleImportForm(OpenLPWizard):
                                                          self.sword_zipbible_combo_box.currentIndex()))
 
         try:
-            if importer.do_import(license_version):
+            if importer.do_import(license_version) and not importer.stop_import_flag:
                 self.manager.save_meta_data(license_version, license_version, license_copyright, license_permissions)
                 self.manager.reload_bibles()
                 if bible_type == BibleFormat.WebDownload:

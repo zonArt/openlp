@@ -157,34 +157,12 @@ class OSISBible(BibleImport):
                     if verse_text:
                         self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
 
-    def validate_file(self, filename):
-        """
-        Validate the supplied file
-
-        :param filename: The supplied file
-        :return: True if valid. ValidationError is raised otherwise.
-        """
-        if BibleImport.is_compressed(filename):
-            raise ValidationError(msg='Compressed file')
-        bible = self.parse_xml(filename, use_objectify=True)
-        if bible is None:
-            raise ValidationError(msg='Error when opening file')
-        root_tag = bible.tag
-        tag_str = '{{{name_space}}}osis'.format(name_space=NS['ns'])
-        if root_tag != tag_str:
-            critical_error_message_box(
-                message=translate('BiblesPlugin.OpenSongImport',
-                                  'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
-                                  'please use the Zefania import option.'))
-            raise ValidationError(msg='Invalid xml.')
-        return True
-
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
-        self.validate_file(self.filename)
+        self.validate_xml_file(self.filename, '{http://www.bibletechnologies.net/2003/OSIS/namespace}osis')
         bible = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
         if bible is None:
             return False
@@ -194,4 +172,4 @@ class OSISBible(BibleImport):
         if not self.language_id:
             return False
         self.process_books(bible)
-        return not self.stop_import_flag
+        return True

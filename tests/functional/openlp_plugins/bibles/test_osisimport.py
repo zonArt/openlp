@@ -67,7 +67,7 @@ class TestOsisImport(TestCase):
         """
         # GIVEN: An instance of OpenSongBible and a mocked parse_xml which returns False
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OSISBible, 'validate_file'), \
+                patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml', return_value=None), \
                 patch.object(OSISBible, 'get_language_id') as mocked_language_id:
             importer = OSISBible(MagicMock(), path='.', name='.', filename='')
@@ -85,7 +85,7 @@ class TestOsisImport(TestCase):
         """
         # GIVEN: An instance of OpenSongBible and a mocked get_language which returns False
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OSISBible, 'validate_file'), \
+                patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml'), \
                 patch.object(OSISBible, 'get_language_id', **{'return_value': False}), \
                 patch.object(OSISBible, 'process_books') as mocked_process_books:
@@ -98,39 +98,18 @@ class TestOsisImport(TestCase):
             self.assertFalse(result)
             self.assertFalse(mocked_process_books.called)
 
-    def do_import_stop_import_test(self):
-        """
-        Test do_import when the stop_import_flag is set to True
-        """
-        # GIVEN: An instance of OpenSongBible and stop_import_flag set to True
-        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OSISBible, 'validate_file'), \
-                patch.object(OSISBible, 'parse_xml'), \
-                patch.object(OSISBible, 'get_language_id', **{'return_value': 10}), \
-                patch.object(OSISBible, 'process_books'):
-            importer = OSISBible(MagicMock(), path='.', name='.', filename='')
-            importer.stop_import_flag = True
-
-            # WHEN: Calling do_import
-            result = importer.do_import()
-
-            # THEN: do_import should return False and process_books should have not been called
-            self.assertFalse(result)
-            self.assertTrue(importer.process_books.called)
-
     @patch('openlp.plugins.bibles.lib.importers.opensong.log')
     def do_import_completes_test(self, mocked_log):
         """
         Test do_import when it completes successfully
         """
-        # GIVEN: An instance of OpenSongBible and stop_import_flag set to True
+        # GIVEN: An instance of OpenSongBible
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OSISBible, 'validate_file'), \
+                patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml'), \
                 patch.object(OSISBible, 'get_language_id', **{'return_value': 10}), \
                 patch.object(OSISBible, 'process_books'):
             importer = OSISBible(MagicMock(), path='.', name='.', filename='')
-            importer.stop_import_flag = False
 
             # WHEN: Calling do_import
             result = importer.do_import()

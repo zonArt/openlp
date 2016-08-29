@@ -318,82 +318,13 @@ class TestOpenSongImport(TestCase, TestMixin):
             importer.create_verse.call_args_list,
             [call(1, 1, 1, 'Verse1 Text'), call(1, 1, 2, 'Verse2 Text')])
 
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.is_compressed')
-    def validate_file_compressed_test(self, mocked_is_compressed):
-        """
-        Test that validate_file raises a ValidationError when supplied with a compressed file
-        """
-        # GIVEN: A mocked is_compressed method which returns True
-        mocked_is_compressed.return_value = True
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-
-        # WHEN: Calling validate_file
-        # THEN: ValidationError should be raised
-        with self.assertRaises(ValidationError) as context:
-            importer.validate_file('file.name')
-        self.assertEqual(context.exception.msg, 'Compressed file')
-
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.parse_xml')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.is_compressed', **{'return_value': False})
-    def validate_file_bible_test(self, mocked_is_compressed, mocked_parse_xml):
-        """
-        Test that validate_file returns True with valid XML
-        """
-        # GIVEN: Some test data with an OpenSong Bible "bible" root tag
-        mocked_parse_xml.return_value = objectify.fromstring('<bible></bible>')
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-
-        # WHEN: Calling validate_file
-        result = importer.validate_file('file.name')
-
-        # THEN: A True should be returned
-        self.assertTrue(result)
-
-    @patch('openlp.plugins.bibles.lib.importers.opensong.critical_error_message_box')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.parse_xml')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.is_compressed', **{'return_value': False})
-    def validate_file_zefania_root_test(self, mocked_is_compressed, mocked_parse_xml, mocked_message_box):
-        """
-        Test that validate_file raises a ValidationError with a Zefinia root tag
-        """
-        # GIVEN: Some test data with a Zefinia "XMLBIBLE" root tag
-        mocked_parse_xml.return_value = objectify.fromstring('<XMLBIBLE></XMLBIBLE>')
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-
-        # WHEN: Calling validate_file
-        # THEN: critical_error_message_box should be called and an ValidationError should be raised
-        with self.assertRaises(ValidationError) as context:
-            importer.validate_file('file.name')
-        self.assertEqual(context.exception.msg, 'Invalid xml.')
-        mocked_message_box.assert_called_once_with(
-            message='Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the '
-                    'Zefania import option.')
-
-    @patch('openlp.plugins.bibles.lib.importers.opensong.critical_error_message_box')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.parse_xml')
-    @patch('openlp.plugins.bibles.lib.importers.opensong.BibleImport.is_compressed', **{'return_value': False})
-    def validate_file_invalid_root_test(self, mocked_is_compressed, mocked_parse_xml, mocked_message_box):
-        """
-        Test that validate_file raises a ValidationError with an invalid root tag
-        """
-        # GIVEN: Some test data with an invalid root tag and an instance of OpenSongBible
-        mocked_parse_xml.return_value = objectify.fromstring('<song></song>')
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-
-        # WHEN: Calling validate_file
-        # THEN: ValidationError should be raised, and the critical error message box should not have been called
-        with self.assertRaises(ValidationError) as context:
-            importer.validate_file('file.name')
-        self.assertEqual(context.exception.msg, 'Invalid xml.')
-        self.assertFalse(mocked_message_box.called)
-
     def do_import_parse_xml_fails_test(self):
         """
         Test do_import when parse_xml fails (returns None)
         """
         # GIVEN: An instance of OpenSongBible and a mocked parse_xml which returns False
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-            patch.object(OpenSongBible, 'validate_file'), \
+            patch.object(OpenSongBible, 'validate_xml_file'), \
             patch.object(OpenSongBible, 'parse_xml', return_value=None), \
             patch.object(OpenSongBible, 'get_language_id') as mocked_language_id:
             importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
@@ -411,7 +342,7 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: An instance of OpenSongBible and a mocked get_language which returns False
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OpenSongBible, 'validate_file'), \
+                patch.object(OpenSongBible, 'validate_xml_file'), \
                 patch.object(OpenSongBible, 'parse_xml'), \
                 patch.object(OpenSongBible, 'get_language_id', return_value=False), \
                 patch.object(OpenSongBible, 'process_books') as mocked_process_books:
@@ -424,39 +355,17 @@ class TestOpenSongImport(TestCase, TestMixin):
             self.assertFalse(result)
             self.assertFalse(mocked_process_books.called)
 
-    def do_import_stop_import_test(self):
-        """
-        Test do_import when the stop_import_flag is set to True
-        """
-        # GIVEN: An instance of OpenSongBible and stop_import_flag set to True
-        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OpenSongBible, 'validate_file'), \
-                patch.object(OpenSongBible, 'parse_xml'), \
-                patch.object(OpenSongBible, 'get_language_id', return_value=10), \
-                patch.object(OpenSongBible, 'process_books') as mocked_process_books:
-
-            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-            importer.stop_import_flag = True
-
-            # WHEN: Calling do_import
-            result = importer.do_import()
-
-            # THEN: do_import should return False and process_books should have not been called
-            self.assertFalse(result)
-            self.assertTrue(mocked_process_books.called)
-
     def do_import_completes_test(self):
         """
         Test do_import when it completes successfully
         """
-        # GIVEN: An instance of OpenSongBible and stop_import_flag set to False
+        # GIVEN: An instance of OpenSongBible
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-                patch.object(OpenSongBible, 'validate_file'), \
+                patch.object(OpenSongBible, 'validate_xml_file'), \
                 patch.object(OpenSongBible, 'parse_xml'), \
                 patch.object(OpenSongBible, 'get_language_id', return_value=10), \
                 patch.object(OpenSongBible, 'process_books'):
             importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
-            importer.stop_import_flag = False
 
             # WHEN: Calling do_import
             result = importer.do_import()
@@ -464,32 +373,32 @@ class TestOpenSongImport(TestCase, TestMixin):
             # THEN: do_import should return True
             self.assertTrue(result)
 
-    def test_file_import(self):
-        """
-        Test the actual import of OpenSong Bible file
-        """
-        # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
-        #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
-        result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
-        test_data = json.loads(result_file.read().decode())
-        bible_file = 'opensong-dk1933.xml'
-        with patch('openlp.plugins.bibles.lib.importers.opensong.OpenSongBible.application'):
-            mocked_manager = MagicMock()
-            mocked_import_wizard = MagicMock()
-            importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
-            importer.wizard = mocked_import_wizard
-            importer.get_book_ref_id_by_name = MagicMock()
-            importer.create_verse = MagicMock()
-            importer.create_book = MagicMock()
-            importer.session = MagicMock()
-            importer.get_language = MagicMock()
-            importer.get_language.return_value = 'Danish'
+        def test_file_import(self):
+            """
+            Test the actual import of OpenSong Bible file
+            """
+            # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
+            #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+            result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
+            test_data = json.loads(result_file.read().decode())
+            bible_file = 'opensong-dk1933.xml'
+            with patch('openlp.plugins.bibles.lib.importers.opensong.OpenSongBible.application'):
+                mocked_manager = MagicMock()
+                mocked_import_wizard = MagicMock()
+                importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+                importer.wizard = mocked_import_wizard
+                importer.get_book_ref_id_by_name = MagicMock()
+                importer.create_verse = MagicMock()
+                importer.create_book = MagicMock()
+                importer.session = MagicMock()
+                importer.get_language = MagicMock()
+                importer.get_language.return_value = 'Danish'
 
-            # WHEN: Importing bible file
-            importer.filename = os.path.join(TEST_PATH, bible_file)
-            importer.do_import()
+                # WHEN: Importing bible file
+                importer.filename = os.path.join(TEST_PATH, bible_file)
+                importer.do_import()
 
-            # THEN: The create_verse() method should have been called with each verse in the file.
-            self.assertTrue(importer.create_verse.called)
-            for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)
+                # THEN: The create_verse() method should have been called with each verse in the file.
+                self.assertTrue(importer.create_verse.called)
+                for verse_tag, verse_text in test_data['verses']:
+                    importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)

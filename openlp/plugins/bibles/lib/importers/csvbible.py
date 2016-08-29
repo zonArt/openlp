@@ -123,7 +123,7 @@ class CSVBible(BibleImport):
         number_of_books = len(books)
         for book in books:
             if self.stop_import_flag:
-                return None
+                break
             self.wizard.increment_progress_bar(
                 translate('BiblesPlugin.CSVBible', 'Importing books... {book}').format(book=book.name))
             self.find_and_create_book(book.name, number_of_books, self.language_id)
@@ -169,10 +169,8 @@ class CSVBible(BibleImport):
         self.wizard.progress_bar.setMinimum(0)
         self.wizard.progress_bar.setMaximum(len(books))
         book_list = self.process_books(books)
-        if self.stop_import_flag:
-            return False
         verses = self.parse_csv_file(self.verses_file, Verse)
         self.wizard.progress_bar.setValue(0)
         self.wizard.progress_bar.setMaximum(len(books) + 1)
         self.process_verses(verses, book_list)
-        return not self.stop_import_flag
+        return True

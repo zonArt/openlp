@@ -134,6 +134,35 @@ class BibleImport(OpenLPMixin, BibleDB):
             log.exception('Opening {file_name} failed.'.format(file_name=e.filename))
             trace_error_handler(log)
             critical_error_message_box( title='An Error Occured When Opening A File',
-                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'
-                .format(file_name=e.filename, error=e.strerror))
+                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'.format(file_name=e.filename, error=e.strerror))
         return None
+
+    def validate_xml_file(self, filename, tag):
+        """
+        Validate the supplied file
+
+        :param filename: The supplied file
+        :return: True if valid. ValidationError is raised otherwise.
+        """
+        if BibleImport.is_compressed(filename):
+            raise ValidationError(msg='Compressed file')
+        bible = self.parse_xml(filename, use_objectify=True)
+        if bible is None:
+            raise ValidationError(msg='Error when opening file')
+        root_tag = bible.tag.lower()
+        bible_type = translate('BiblesPlugin.BibleImport', 'unknown type of',
+                               'This looks like an unknown type of XML bible.')
+        if root_tag == tag:
+            return True
+        elif root_tag == 'bible':
+            bible_type = "OpenSong"
+        elif root_tag == '{http://www.bibletechnologies.net/2003/osis/namespace}osis':
+            bible_type = 'OSIS'
+        elif root_tag == 'xmlbible':
+            bible_type = 'Zefania'
+        critical_error_message_box(
+            message=translate('BiblesPlugin.BibleImport',
+                              'Incorrect Bible file type supplied. This looks like an {bible_type} XML bible.'
+                              .format(bible_type=bible_type)))
+        raise ValidationError(msg='Invalid xml.')
+

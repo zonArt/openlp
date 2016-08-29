@@ -136,29 +136,6 @@ class OpenSongBible(BibleImport):
             verse_number = parse_verse_number(verse.attrib['n'], verse_number)
             self.create_verse(book.id, chapter_number, verse_number, get_text(verse))
 
-    def validate_file(self, filename):
-        """
-        Validate the supplied file
-
-        :param filename: The supplied file
-        :return: True if valid. ValidationError is raised otherwise.
-        """
-        if BibleImport.is_compressed(filename):
-            raise ValidationError(msg='Compressed file')
-        bible = self.parse_xml(filename, use_objectify=True)
-        if bible is None:
-            raise ValidationError(msg='Error when opening file')
-        root_tag = bible.tag.lower()
-        if root_tag != 'bible':
-            if root_tag == 'xmlbible':
-                # Zefania bibles have a root tag of XMLBIBLE". Sometimes these bibles are referred to as 'OpenSong'
-                critical_error_message_box(
-                    message=translate('BiblesPlugin.OpenSongImport',
-                                      'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
-                                      'please use the Zefania import option.'))
-            raise ValidationError(msg='Invalid xml.')
-        return True
-
     def do_import(self, bible_name=None):
         """
         Loads an Open Song Bible from a file.
@@ -167,7 +144,7 @@ class OpenSongBible(BibleImport):
         :return: True if import completed, False if import was unsuccessful
         """
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        self.validate_file(self.filename)
+        self.validate_xml_file(self.filename, 'bible')
         bible = self.parse_xml(self.filename, use_objectify=True)
         if bible is None:
             return False
@@ -176,4 +153,4 @@ class OpenSongBible(BibleImport):
         if not self.language_id:
             return False
         self.process_books(bible.b)
-        return not self.stop_import_flag
+        return True

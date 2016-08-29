@@ -194,9 +194,9 @@ class TestCSVImport(TestCase):
             # WHEN: Calling process_books
             result = importer.process_books(['Book 1'])
 
-            # THEN: increment_progress_bar should not be called and the return value should be None
+            # THEN: increment_progress_bar should not be called and the return value should be an empty dictionary
             self.assertFalse(importer.wizard.increment_progress_bar.called)
-            self.assertIsNone(result)
+            self.assertEqual(result, {})
 
     def process_books_test(self):
         """
@@ -294,60 +294,6 @@ class TestCSVImport(TestCase):
             # False should be returned.
             importer.get_language.assert_called_once_with('Bible Name')
             self.assertFalse(result)
-
-    def do_import_stop_import_test(self):
-        """
-        Test do_import when the import is stopped
-        """
-        # GIVEN: An instance of CSVBible with stop_import set to True
-        mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
-            importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            importer.get_language = MagicMock(return_value=10)
-            importer.parse_csv_file = MagicMock(return_value=['Book 1', 'Book 2', 'Book 3'])
-            importer.process_books = MagicMock()
-            importer.stop_import_flag = True
-            importer.wizard = MagicMock()
-
-            # WHEN: Calling do_import
-            result = importer.do_import('Bible Name')
-
-            # THEN: log.exception should not be called, parse_csv_file should only be called once,
-            # and False should be returned.
-            self.assertFalse(mocked_log.exception.called)
-            importer.parse_csv_file.assert_called_once_with('books.csv', Book)
-            importer.process_books.assert_called_once_with(['Book 1', 'Book 2', 'Book 3'])
-            self.assertFalse(result)
-
-    def do_import_stop_import_2_test(self):
-        """
-        Test do_import when the import is stopped
-        """
-        # GIVEN: An instance of CSVBible with stop_import which is True the second time of calling
-        mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
-            CSVBible.stop_import_flag = PropertyMock(side_effect=[False, True])
-            importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
-            importer.get_language = MagicMock(return_value=10)
-            importer.parse_csv_file = MagicMock(side_effect=[['Book 1'], ['Verse 1']])
-            importer.process_books = MagicMock(return_value=['Book 1'])
-            importer.process_verses = MagicMock(return_value=['Verse 1'])
-            importer.wizard = MagicMock()
-
-            # WHEN: Calling do_import
-            result = importer.do_import('Bible Name')
-
-            # THEN: log.exception should not be called, parse_csv_file should be called twice,
-            # and False should be returned.
-            self.assertFalse(mocked_log.exception.called)
-            self.assertEqual(importer.parse_csv_file.mock_calls, [call('books.csv', Book), call('verses.csv', Verse)])
-            importer.process_verses.assert_called_once_with(['Verse 1'], ['Book 1'])
-            self.assertFalse(result)
-
-            # Cleanup
-            del CSVBible.stop_import_flag
 
     def do_import_success_test(self):
         """
