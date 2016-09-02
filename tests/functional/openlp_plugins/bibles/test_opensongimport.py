@@ -217,7 +217,8 @@ class TestOpenSongImport(TestCase, TestMixin):
             importer.process_books([book1, book2])
 
             # THEN: find_and_create_book and process_books should be called with the details from the mocked books
-            self.assertEqual(self.mocked_find_and_create_book.call_args_list, [call('Name1', 2, 10), call('Name2', 2, 10)])
+            self.assertEqual(self.mocked_find_and_create_book.call_args_list,
+                             [call('Name1', 2, 10), call('Name2', 2, 10)])
             self.assertEqual(mocked_process_chapters.call_args_list,
                              [call('db_book1', 'Chapter1'), call('db_book2', 'Chapter2')])
             self.assertEqual(importer.session.commit.call_count, 2)
@@ -325,9 +326,9 @@ class TestOpenSongImport(TestCase, TestMixin):
         """
         # GIVEN: An instance of OpenSongBible and a mocked parse_xml which returns False
         with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
-            patch.object(OpenSongBible, 'validate_xml_file'), \
-            patch.object(OpenSongBible, 'parse_xml', return_value=None), \
-            patch.object(OpenSongBible, 'get_language_id') as mocked_language_id:
+                patch.object(OpenSongBible, 'validate_xml_file'), \
+                patch.object(OpenSongBible, 'parse_xml', return_value=None), \
+                patch.object(OpenSongBible, 'get_language_id') as mocked_language_id:
             importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
             # WHEN: Calling do_import
@@ -373,6 +374,7 @@ class TestOpenSongImport(TestCase, TestMixin):
 
             # THEN: do_import should return True
             self.assertTrue(result)
+
 
 class TestOpenSongImportFileImports(TestCase, TestMixin):
     """

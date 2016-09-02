@@ -173,8 +173,8 @@ class TestBibleImport(TestCase):
             # THEN: None should be returned and an error should be logged
             mocked_languages_get_language.assert_called_once_with('Qwerty')
             mocked_db_get_language.assert_called_once_with('KJV')
-            self.mocked_log.error.assert_called_once_with('Language detection failed when importing from "KJV". '
-                                                        'User aborted language selection.')
+            self.mocked_log.error.assert_called_once_with(
+                'Language detection failed when importing from "KJV". User aborted language selection.')
             self.assertFalse(instance.save_meta.called)
             self.assertIsNone(result)
 
@@ -418,8 +418,7 @@ class TestBibleImport(TestCase):
         Test that validate_xml_file raises a ValidationError with an Zefania root tag
         """
         # GIVEN: Some test data with an Zefania root tag and an instance of BibleImport
-        with patch.object(BibleImport, 'parse_xml',
-                             return_value=objectify.fromstring('<xmlbible></xmlbible>')), \
+        with patch.object(BibleImport, 'parse_xml', return_value=objectify.fromstring('<xmlbible></xmlbible>')), \
                 patch.object(BibleImport, 'is_compressed', return_value=False):
             importer = BibleImport(MagicMock(), path='.', name='.', filename='')
 
@@ -437,8 +436,8 @@ class TestBibleImport(TestCase):
         Test that validate_xml_file raises a ValidationError with an unknown root tag
         """
         # GIVEN: Some test data with an unknown root tag and an instance of BibleImport
-        with patch.object(BibleImport, 'parse_xml',
-                             return_value=objectify.fromstring('<unknownbible></unknownbible>')), \
+        with patch.object(
+                BibleImport, 'parse_xml', return_value=objectify.fromstring('<unknownbible></unknownbible>')), \
                 patch.object(BibleImport, 'is_compressed', return_value=False):
             importer = BibleImport(MagicMock(), path='.', name='.', filename='')
 
