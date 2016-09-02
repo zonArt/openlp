@@ -47,6 +47,9 @@ class TestOpenSongImport(TestCase, TestMixin):
     """
 
     def setUp(self):
+        self.find_and_create_book_patch = patch.object(BibleImport, 'find_and_create_book')
+        self.addCleanup(self.find_and_create_book_patch.stop)
+        self.mocked_find_and_create_book = self.find_and_create_book_patch.start()
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
         self.addCleanup(self.manager_patcher.stop)
         self.manager_patcher.start()
@@ -177,12 +180,11 @@ class TestOpenSongImport(TestCase, TestMixin):
         mocked_log.warning.assert_called_once_with('Illegal verse number: (1, 2, 3)')
         self.assertEqual(result, 13)
 
-    @patch('openlp.plugins.bibles.lib.bibleimport.BibleImport.find_and_create_book')
-    def process_books_stop_import_test(self, mocked_find_and_create_book):
+    def process_books_stop_import_test(self):
         """
         Test process_books when stop_import is set to True
         """
-        # GIVEN: An isntance of OpenSongBible
+        # GIVEN: An instance of OpenSongBible
         importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
         # WHEN: stop_import_flag is set to True
@@ -190,36 +192,35 @@ class TestOpenSongImport(TestCase, TestMixin):
         importer.process_books(['Book'])
 
         # THEN: find_and_create_book should not have been called
-        self.assertFalse(mocked_find_and_create_book.called)
+        self.assertFalse(self.mocked_find_and_create_book.called)
 
-    @patch('openlp.plugins.bibles.lib.bibleimport.BibleImport.find_and_create_book',
-           **{'side_effect': ['db_book1', 'db_book2']})
-    def process_books_completes_test(self, mocked_find_and_create_book):
+    def process_books_completes_test(self):
         """
         Test process_books when it processes all books
         """
         # GIVEN: An instance of OpenSongBible Importer and two mocked books
-        importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
+        self.mocked_find_and_create_book.side_effect = ['db_book1', 'db_book2']
+        with patch.object(OpenSongBible, 'process_chapters') as mocked_process_chapters:
+            importer = OpenSongBible(MagicMock(), path='.', name='.', filename='')
 
-        book1 = MagicMock()
-        book1.attrib = {'n': 'Name1'}
-        book1.c = 'Chapter1'
-        book2 = MagicMock()
-        book2.attrib = {'n': 'Name2'}
-        book2.c = 'Chapter2'
-        importer.language_id = 10
-        importer.process_chapters = MagicMock()
-        importer.session = MagicMock()
-        importer.stop_import_flag = False
+            book1 = MagicMock()
+            book1.attrib = {'n': 'Name1'}
+            book1.c = 'Chapter1'
+            book2 = MagicMock()
+            book2.attrib = {'n': 'Name2'}
+            book2.c = 'Chapter2'
+            importer.language_id = 10
+            importer.session = MagicMock()
+            importer.stop_import_flag = False
 
-        # WHEN: Calling process_books with the two books
-        importer.process_books([book1, book2])
+            # WHEN: Calling process_books with the two books
+            importer.process_books([book1, book2])
 
-        # THEN: find_and_create_book and process_books should be called with the details from the mocked books
-        self.assertEqual(mocked_find_and_create_book.call_args_list, [call('Name1', 2, 10), call('Name2', 2, 10)])
-        self.assertEqual(importer.process_chapters.call_args_list,
-                         [call('db_book1', 'Chapter1'), call('db_book2', 'Chapter2')])
-        self.assertEqual(importer.session.commit.call_count, 2)
+            # THEN: find_and_create_book and process_books should be called with the details from the mocked books
+            self.assertEqual(self.mocked_find_and_create_book.call_args_list, [call('Name1', 2, 10), call('Name2', 2, 10)])
+            self.assertEqual(mocked_process_chapters.call_args_list,
+                             [call('db_book1', 'Chapter1'), call('db_book2', 'Chapter2')])
+            self.assertEqual(importer.session.commit.call_count, 2)
 
     def process_chapters_stop_import_test(self):
         """
@@ -373,32 +374,41 @@ class TestOpenSongImport(TestCase, TestMixin):
             # THEN: do_import should return True
             self.assertTrue(result)
 
-        def test_file_import(self):
-            """
-            Test the actual import of OpenSong Bible file
-            """
-            # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
-            #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
-            result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
-            test_data = json.loads(result_file.read().decode())
-            bible_file = 'opensong-dk1933.xml'
-            with patch('openlp.plugins.bibles.lib.importers.opensong.OpenSongBible.application'):
-                mocked_manager = MagicMock()
-                mocked_import_wizard = MagicMock()
-                importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
-                importer.wizard = mocked_import_wizard
-                importer.get_book_ref_id_by_name = MagicMock()
-                importer.create_verse = MagicMock()
-                importer.create_book = MagicMock()
-                importer.session = MagicMock()
-                importer.get_language = MagicMock()
-                importer.get_language.return_value = 'Danish'
+class TestOpenSongImportFileImports(TestCase, TestMixin):
+    """
+    Test the functions in the :mod:`opensongimport` module.
+    """
+    def setUp(self):
+        self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
+        self.addCleanup(self.manager_patcher.stop)
+        self.manager_patcher.start()
 
-                # WHEN: Importing bible file
-                importer.filename = os.path.join(TEST_PATH, bible_file)
-                importer.do_import()
+    def test_file_import(self):
+        """
+        Test the actual import of OpenSong Bible file
+        """
+        # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
+        #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
+        test_data = json.loads(result_file.read().decode())
+        bible_file = 'opensong-dk1933.xml'
+        with patch('openlp.plugins.bibles.lib.importers.opensong.OpenSongBible.application'):
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+            importer.wizard = mocked_import_wizard
+            importer.get_book_ref_id_by_name = MagicMock()
+            importer.create_verse = MagicMock()
+            importer.create_book = MagicMock()
+            importer.session = MagicMock()
+            importer.get_language = MagicMock()
+            importer.get_language.return_value = 'Danish'
 
-                # THEN: The create_verse() method should have been called with each verse in the file.
-                self.assertTrue(importer.create_verse.called)
-                for verse_tag, verse_text in test_data['verses']:
-                    importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)
+            # WHEN: Importing bible file
+            importer.filename = os.path.join(TEST_PATH, bible_file)
+            importer.do_import()
+
+            # THEN: The create_verse() method should have been called with each verse in the file.
+            self.assertTrue(importer.create_verse.called)
+            for verse_tag, verse_text in test_data['verses']:
+                importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)

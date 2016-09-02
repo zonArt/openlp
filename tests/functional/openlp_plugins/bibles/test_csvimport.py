@@ -241,7 +241,6 @@ class TestCSVImport(TestCase):
 
             # THEN: get_book_name should not be called and the return value should be None
             self.assertFalse(importer.get_book_name.called)
-            importer.wizard.increment_progress_bar.assert_called_once_with('Importing verses... done.')
             self.assertIsNone(result)
 
     def process_verses_successful_test(self):
@@ -352,6 +351,6 @@ class TestCSVImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.get_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.get_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('1. Mosebog', importer.get_book_ref_id_by_name(), 1)
             importer.create_book.assert_any_call('1. Krønikebog', importer.get_book_ref_id_by_name(), 1)

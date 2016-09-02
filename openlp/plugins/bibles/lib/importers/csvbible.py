@@ -150,8 +150,7 @@ class CSVBible(BibleImport):
                     translate('BiblesPlugin.CSVBible', 'Importing verses from {book}...',
                               'Importing verses from <book name>...').format(book=book.name))
                 self.session.commit()
-            self.create_verse(book.id, verse.chapter_number, verse.number, verse.text)
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
+            self.create_verse(book.id, int(verse.chapter_number), int(verse.number), verse.text)
         self.session.commit()
 
     def do_import(self, bible_name=None):

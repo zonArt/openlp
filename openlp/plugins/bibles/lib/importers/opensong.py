@@ -115,10 +115,8 @@ class OpenSongBible(BibleImport):
             if self.stop_import_flag:
                 break
             chapter_number = parse_chapter_number(chapter.attrib['n'], chapter_number)
+            self.set_current_chapter(book.name, chapter_number)
             self.process_verses(book, chapter_number, chapter.v)
-            self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong',
-                                                         'Importing {name} {chapter}...'
-                                                         ).format(name=book.name, chapter=chapter_number))
 
     def process_verses(self, book, chapter_number, verses):
         """

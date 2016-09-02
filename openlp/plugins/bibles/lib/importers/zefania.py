@@ -79,7 +79,7 @@ class ZefaniaBible(BibleImport):
                     chapter_number = CHAPTER.get("cnumber")
                     for VERS in CHAPTER:
                         verse_number = VERS.get("vnumber")
-                        self.create_verse(db_book.id, chapter_number, verse_number, VERS.text.replace('<BR/>', '\n'))
+                        self.create_verse(db_book.id, int(chapter_number), int(verse_number), VERS.text.replace('<BR/>', '\n'))
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.Zefnia',
                                   'Importing {book} {chapter}...').format(book=db_book.name,

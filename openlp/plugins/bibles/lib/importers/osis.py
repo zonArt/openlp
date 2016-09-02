@@ -23,9 +23,6 @@
 import logging
 from lxml import etree
 
-from openlp.core.common import translate, trace_error_handler
-from openlp.core.lib.exceptions import ValidationError
-from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 
 log = logging.getLogger(__name__)
@@ -74,14 +71,9 @@ REMOVABLE_TAGS = (
     '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption'
 )
 
-
-def replacement(match):
-    return match.group(2).upper()
-
-
 # Precompile a few xpath-querys
-verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
-text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
+verse_in_chapter = etree.XPath('//ns:chapter[1]/ns:verse', namespaces=NS)
+text_in_verse = etree.XPath('//ns:verse[1]/text()', namespaces=NS)
 
 
 class OSISBible(BibleImport):
@@ -90,79 +82,88 @@ class OSISBible(BibleImport):
     """
     def process_books(self, bible_data):
         """
+        Extract and create the bible books from the parsed xml
 
-        :param bible_data:
-        :return:
+        :param bible_data: parsed xml
+        :return: None
         """
-        no_of_books = int(bible_data.xpath("count(//ns:div[@type='book'])", namespaces=NS))
         # Find books in the bible
         bible_books = bible_data.xpath("//ns:div[@type='book']", namespaces=NS)
+        no_of_books = len(bible_books)
         for book in bible_books:
             if self.stop_import_flag:
                 break
             # Remove div-tags in the book
             etree.strip_tags(book, '{http://www.bibletechnologies.net/2003/OSIS/namespace}div')
             db_book = self.find_and_create_book(book.get('osisID'), no_of_books, self.language_id)
-            self.process_chapters_and_verses(db_book, book)
+            self.process_chapters(db_book, book)
             self.session.commit()
 
-    def process_chapters_and_verses(self, book, chapters):
+    def process_chapters(self, book, chapters):
         """
+        Extract the chapters, and do some initial processing of the verses
 
-        :param book:
-        :param chapters:
-        :return:
+        :param book: An OpenLP bible database book object
+        :param chapters: parsed chapters
+        :return: None
         """
         # Find out if chapter-tags contains the verses, or if it is used as milestone/anchor
-        if int(verse_in_chapter(chapters)) > 0:
+        if verse_in_chapter(chapters):
             # The chapter tags contains the verses
             for chapter in chapters:
-                chapter_number = chapter.get("osisID").split('.')[1]
+                chapter_number = int(chapter.get("osisID").split('.')[1])
+                self.set_current_chapter(book.name, chapter_number)
                 # Find out if verse-tags contains the text, or if it is used as milestone/anchor
-                if int(text_in_verse(chapter)) == 0:
+                if not text_in_verse(chapter):
                     # verse-tags are used as milestone
                     for verse in chapter:
                         # If this tag marks the start of a verse, the verse text is between this tag and
                         # the next tag, which the "tail" attribute gives us.
-                        if verse.get('sID'):
-                            verse_number = verse.get("osisID").split('.')[2]
-                            verse_text = verse.tail
-                            if verse_text:
-                                self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
+                        self.process_verse(book, chapter_number, verse, use_milestones=True)
                 else:
                     # Verse-tags contains the text
                     for verse in chapter:
-                        verse_number = verse.get("osisID").split('.')[2]
-                        if verse.text:
-                            self.create_verse(book.id, chapter_number, verse_number, verse.text.strip())
-                self.wizard.increment_progress_bar(
-                    translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                    {'bookname': book.name, 'chapter': chapter_number})
+                        self.process_verse(book, chapter_number, verse)
         else:
             # The chapter tags is used as milestones. For now we assume verses is also milestones
             chapter_number = 0
             for element in chapters:
                 if element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}chapter' \
                         and element.get('sID'):
-                    chapter_number = element.get("osisID").split('.')[1]
-                    self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                        {'bookname': book.name, 'chapter': chapter_number})
-                elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse' \
-                        and element.get('sID'):
+                    chapter_number = int(element.get("osisID").split('.')[1])
+                    self.set_current_chapter(book.name, chapter_number)
+                elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse':
                     # If this tag marks the start of a verse, the verse text is between this tag and
                     # the next tag, which the "tail" attribute gives us.
-                    verse_number = element.get("osisID").split('.')[2]
-                    verse_text = element.tail
-                    if verse_text:
-                        self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
+                    self.process_verse(book, chapter_number, element, use_milestones=True)
+
+    def process_verse(self, book, chapter_number, element, use_milestones=False):
+        """
+        Process a verse element
+        :param book: A database Book object
+        :param chapter_number: The chapter number to add the verses to (int)
+        :param element: The verse element to process. (etree element type)
+        :param use_milestones: set to True to process a 'milestone' verse. Defaults to False
+        :return: None
+        """
+        osis_id = element.get("osisID")
+        if not osis_id:
+            return None
+        verse_number = int(osis_id.split('.')[2])
+        verse_text = ''
+        if use_milestones and element.get('sID'):
+            verse_text = element.tail
+        elif not use_milestones:
+            verse_text = element.text
+        if verse_text:
+            self.create_verse(book.id, chapter_number, verse_number, verse_text.strip())
 
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
-        self.validate_xml_file(self.filename, '{http://www.bibletechnologies.net/2003/OSIS/namespace}osis')
+        self.validate_xml_file(self.filename, '{http://www.bibletechnologies.net/2003/osis/namespace}osis')
         bible = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
         if bible is None:
             return False

@@ -41,6 +41,10 @@ class BibleImport(OpenLPMixin, BibleDB):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
 
+    def set_current_chapter(self, book_name, chapter_name):
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing {book} {chapter}...')
+                                           .format(book=book_name, chapter=chapter_name))
+
     @staticmethod
     def is_compressed(file):
         """
@@ -114,15 +118,15 @@ class BibleImport(OpenLPMixin, BibleDB):
         """
         try:
             with open(filename, 'rb') as import_file:
-                # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
-                # detection, and the two mechanisms together interfere with each other.
+                # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own
+                # encoding detection, and the two mechanisms together interfere with each other.
                 if not use_objectify:
                     tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
                 else:
                     tree = objectify.parse(import_file, parser=objectify.makeparser(recover=True))
                 if elements or tags:
-                    self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
-                                                                 'Removing unused tags (this may take a few minutes)...'))
+                    self.wizard.increment_progress_bar(
+                        translate('BiblesPlugin.OsisImport', 'Removing unused tags (this may take a few minutes)...'))
                 if elements:
                     # Strip tags we don't use - remove content
                     etree.strip_elements(tree, elements, with_tail=False)
@@ -133,8 +137,10 @@ class BibleImport(OpenLPMixin, BibleDB):
         except OSError as e:
             log.exception('Opening {file_name} failed.'.format(file_name=e.filename))
             trace_error_handler(log)
-            critical_error_message_box( title='An Error Occured When Opening A File',
-                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'.format(file_name=e.filename, error=e.strerror))
+            critical_error_message_box(
+                title='An Error Occured When Opening A File',
+                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'
+                .format(file_name=e.filename, error=e.strerror))
         return None
 
     def validate_xml_file(self, filename, tag):
@@ -142,6 +148,7 @@ class BibleImport(OpenLPMixin, BibleDB):
         Validate the supplied file
 
         :param filename: The supplied file
+        :param tag: The expected root tag type
         :return: True if valid. ValidationError is raised otherwise.
         """
         if BibleImport.is_compressed(filename):
@@ -165,4 +172,3 @@ class BibleImport(OpenLPMixin, BibleDB):
                               'Incorrect Bible file type supplied. This looks like an {bible_type} XML bible.'
                               .format(bible_type=bible_type)))
         raise ValidationError(msg='Invalid xml.')
-

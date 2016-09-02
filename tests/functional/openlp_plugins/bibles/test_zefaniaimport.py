@@ -88,7 +88,7 @@ class TestZefaniaImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.create_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('Genesis', 1, 1)
 
     def test_file_import_no_book_name(self):
@@ -118,5 +118,5 @@ class TestZefaniaImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.create_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('Exodus', 2, 1)
