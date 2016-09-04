@@ -46,7 +46,7 @@ class TestSwordImport(TestCase):
     """
 
     def setUp(self):
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
         self.registry_patcher.start()
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
         self.manager_patcher.start()

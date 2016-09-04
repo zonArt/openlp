@@ -33,7 +33,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, translate, clean_filename
+from openlp.core.common import AppLocation, translate, clean_filename
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib import upgrade
@@ -106,7 +106,7 @@ def init_schema(url):
     return session
 
 
-class BibleDB(Manager, RegistryProperties):
+class BibleDB(Manager):
     """
     This class represents a database-bound Bible. It is used as a base class for all the custom importers, so that
     the can implement their own import methods, but benefit from the database methods in here via inheritance,
@@ -153,15 +153,6 @@ class BibleDB(Manager, RegistryProperties):
                 self.get_name()
         if 'path' in kwargs:
             self.path = kwargs['path']
-        self.wizard = None
-        Registry().register_function('openlp_stop_wizard', self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import')
-        self.stop_import_flag = True
 
     def get_name(self):
         """
@@ -169,17 +160,6 @@ class BibleDB(Manager, RegistryProperties):
         """
         version_name = self.get_object(BibleMeta, 'name')
         self.name = version_name.value if version_name else None
-        return self.name
-
-    def register(self, wizard):
-        """
-        This method basically just initialises the database. It is called from the Bible Manager when a Bible is
-        imported. Descendant classes may want to override this method to supply their own custom
-        initialisation as well.
-
-        :param wizard: The actual Qt wizard form.
-        """
-        self.wizard = wizard
         return self.name
 
     def create_book(self, name, bk_ref_id, testament=1):
@@ -305,26 +285,6 @@ class BibleDB(Manager, RegistryProperties):
         """
         log.debug('BibleDB.get_book_by_book_ref_id("{ref}")'.format(ref=ref_id))
         return self.get_object_filtered(Book, Book.book_reference_id.like(ref_id))
-
-    def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
-        log.debug('BibleDB.get_book_ref_id_by_name:("{book}", "{lang}")'.format(book=book, lang=language_id))
-        book_id = None
-        if BiblesResourcesDB.get_book(book, True):
-            book_temp = BiblesResourcesDB.get_book(book, True)
-            book_id = book_temp['id']
-        elif BiblesResourcesDB.get_alternative_book_name(book):
-            book_id = BiblesResourcesDB.get_alternative_book_name(book)
-        elif AlternativeBookNamesDB.get_book_reference_id(book):
-            book_id = AlternativeBookNamesDB.get_book_reference_id(book)
-        else:
-            from openlp.plugins.bibles.forms import BookNameForm
-            book_name = BookNameForm(self.wizard)
-            if book_name.exec(book, self.get_books(), maxbooks):
-                book_id = book_name.book_id
-            if book_id:
-                AlternativeBookNamesDB.create_alternative_book_name(
-                    book, book_id, language_id)
-        return book_id
 
     def get_book_ref_id_by_localised_name(self, book, language_selection):
         """
@@ -461,25 +421,6 @@ class BibleDB(Manager, RegistryProperties):
         if not count:
             return 0
         return count
-
-    def get_language(self, bible_name=None):
-        """
-        If no language is given it calls a dialog window where the user could  select the bible language.
-        Return the language id of a bible.
-
-        :param bible_name: The language the bible is.
-        """
-        log.debug('BibleDB.get_language()')
-        from openlp.plugins.bibles.forms import LanguageForm
-        language_id = None
-        language_form = LanguageForm(self.wizard)
-        if language_form.exec(bible_name):
-            combo_box = language_form.language_combo_box
-            language_id = combo_box.itemData(combo_box.currentIndex())
-        if not language_id:
-            return None
-        self.save_meta('language_id', language_id)
-        return language_id
 
     def dump_bible(self):
         """

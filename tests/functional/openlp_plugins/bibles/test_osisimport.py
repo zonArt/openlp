@@ -49,7 +49,7 @@ class TestOsisImport(TestCase):
         self.find_and_create_book_patch = patch.object(BibleImport, 'find_and_create_book')
         self.addCleanup(self.find_and_create_book_patch.stop)
         self.mocked_find_and_create_book = self.find_and_create_book_patch.start()
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
         self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
@@ -409,7 +409,7 @@ class TestOsisImportFileImports(TestCase):
     Test the functions in the :mod:`osisimport` module.
     """
     def setUp(self):
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
         self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')

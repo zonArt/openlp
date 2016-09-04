@@ -23,23 +23,21 @@
 from lxml import etree, objectify
 from zipfile import is_zipfile
 
-from openlp.core.common import OpenLPMixin, languages, translate
+from openlp.core.common import OpenLPMixin, Registry, RegistryProperties, languages, translate
 from openlp.core.lib import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import AlternativeBookNamesDB, BibleDB, BiblesResourcesDB
 
 
-class BibleImport(OpenLPMixin, BibleDB):
+class BibleImport(OpenLPMixin, RegistryProperties, BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
-
-    def set_current_chapter(self, book_name, chapter_name):
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing {book} {chapter}...')
-                                           .format(book=book_name, chapter=chapter_name))
+        self.wizard = None
+        Registry().register_function('openlp_stop_wizard', self.stop_import)
 
     @staticmethod
     def is_compressed(file):
@@ -55,6 +53,45 @@ class BibleImport(OpenLPMixin, BibleDB):
                                   ).format(file=file))
             return True
         return False
+
+    def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
+        self.log_debug('BibleDB.get_book_ref_id_by_name:("{book}", "{lang}")'.format(book=book, lang=language_id))
+        book_id = None
+        if BiblesResourcesDB.get_book(book, True):
+            book_temp = BiblesResourcesDB.get_book(book, True)
+            book_id = book_temp['id']
+        elif BiblesResourcesDB.get_alternative_book_name(book):
+            book_id = BiblesResourcesDB.get_alternative_book_name(book)
+        elif AlternativeBookNamesDB.get_book_reference_id(book):
+            book_id = AlternativeBookNamesDB.get_book_reference_id(book)
+        else:
+            from openlp.plugins.bibles.forms import BookNameForm
+            book_name = BookNameForm(self.wizard)
+            if book_name.exec(book, self.get_books(), maxbooks):
+                book_id = book_name.book_id
+            if book_id:
+                AlternativeBookNamesDB.create_alternative_book_name(
+                    book, book_id, language_id)
+        return book_id
+
+    def get_language(self, bible_name=None):
+        """
+        If no language is given it calls a dialog window where the user could  select the bible language.
+        Return the language id of a bible.
+
+        :param bible_name: The language the bible is.
+        """
+        self.log_debug('BibleImpoer.get_language()')
+        from openlp.plugins.bibles.forms import LanguageForm
+        language_id = None
+        language_form = LanguageForm(self.wizard)
+        if language_form.exec(bible_name):
+            combo_box = language_form.language_combo_box
+            language_id = combo_box.itemData(combo_box.currentIndex())
+        if not language_id:
+            return None
+        self.save_meta('language_id', language_id)
+        return language_id
 
     def get_language_id(self, file_language=None, bible_name=None):
         """
@@ -137,6 +174,28 @@ class BibleImport(OpenLPMixin, BibleDB):
                 message='The following error occurred when trying to open\n{file_name}:\n\n{error}'
                 .format(file_name=e.filename, error=e.strerror))
         return None
+
+    def register(self, wizard):
+        """
+        This method basically just initialises the database. It is called from the Bible Manager when a Bible is
+        imported. Descendant classes may want to override this method to supply their own custom
+        initialisation as well.
+
+        :param wizard: The actual Qt wizard form.
+        """
+        self.wizard = wizard
+        return self.name
+
+    def set_current_chapter(self, book_name, chapter_name):
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing {book} {chapter}...')
+                                           .format(book=book_name, chapter=chapter_name))
+
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        self.log_debug('Stopping import')
+        self.stop_import_flag = True
 
     def validate_xml_file(self, filename, tag):
         """

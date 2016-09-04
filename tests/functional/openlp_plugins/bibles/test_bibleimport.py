@@ -62,6 +62,9 @@ class TestBibleImport(TestCase):
                                        side_effect=lambda module, string_to_translate, *args: string_to_translate)
         self.addCleanup(self.translate_patcher.stop)
         self.mocked_translate = self.translate_patcher.start()
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
+        self.addCleanup(self.registry_patcher.stop)
+        self.registry_patcher.start()
 
     def init_kwargs_none_test(self):
         """
@@ -87,6 +90,54 @@ class TestBibleImport(TestCase):
         # THEN: The filename keyword should be set to bible.xml
         self.assertEqual(instance.filename, 'bible.xml')
         self.assertIsInstance(instance, BibleDB)
+
+    def get_language_canceled_test(self):
+        """
+        Test the BibleImport.get_language method when the user rejects the dialog box
+        """
+        # GIVEN: A mocked LanguageForm with an exec method which returns QtDialog.Rejected and an instance of BibleDB
+        with patch.object(BibleDB, '_setup'), patch('openlp.plugins.bibles.forms.LanguageForm') as mocked_language_form:
+
+            # The integer value of QtDialog.Rejected is 0. Using the enumeration causes a seg fault for some reason
+            mocked_language_form_instance = MagicMock(**{'exec.return_value': 0})
+            mocked_language_form.return_value = mocked_language_form_instance
+            instance = BibleImport(MagicMock())
+            mocked_wizard = MagicMock()
+            instance.wizard = mocked_wizard
+
+            # WHEN: Calling get_language()
+            result = instance.get_language()
+
+            # THEN: get_language() should return False
+            mocked_language_form.assert_called_once_with(mocked_wizard)
+            mocked_language_form_instance.exec.assert_called_once_with(None)
+            self.assertFalse(result, 'get_language() should return False if the user rejects the dialog box')
+
+    def get_language_accepted_test(self):
+        """
+        Test the BibleImport.get_language method when the user accepts the dialog box
+        """
+        # GIVEN: A mocked LanguageForm with an exec method which returns QtDialog.Accepted an instance of BibleDB and
+        #       a combobox with the selected item data as 10
+        with patch.object(BibleDB, 'save_meta'), patch.object(BibleDB, '_setup'), \
+                patch('openlp.plugins.bibles.forms.LanguageForm') as mocked_language_form:
+
+            # The integer value of QtDialog.Accepted is 1. Using the enumeration causes a seg fault for some reason
+            mocked_language_form_instance = MagicMock(**{'exec.return_value': 1,
+                                                         'language_combo_box.itemData.return_value': 10})
+            mocked_language_form.return_value = mocked_language_form_instance
+            instance = BibleImport(MagicMock())
+            mocked_wizard = MagicMock()
+            instance.wizard = mocked_wizard
+
+            # WHEN: Calling get_language()
+            result = instance.get_language('Bible Name')
+
+            # THEN: get_language() should return the id of the selected language in the combo box
+            mocked_language_form.assert_called_once_with(mocked_wizard)
+            mocked_language_form_instance.exec.assert_called_once_with('Bible Name')
+            self.assertEqual(result, 10, 'get_language() should return the id of the language the user has chosen when '
+                                         'they accept the dialog box')
 
     def get_language_id_language_found_test(self):
         """
@@ -171,6 +222,38 @@ class TestBibleImport(TestCase):
                 'Language detection failed when importing from "KJV". User aborted language selection.')
             self.assertFalse(instance.save_meta.called)
             self.assertIsNone(result)
+
+    def is_compressed_compressed_test(self):
+        """
+        Test is_compressed when the 'file' being tested is compressed
+        """
+        # GIVEN: An instance of BibleImport and a mocked is_zipfile which returns True
+        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=True):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling is_compressed
+            result = instance.is_compressed('file.ext')
+
+            # THEN: Then critical_error_message_box should be called informing the user that the file is compressed and
+            #       True should be returned
+            self.mocked_critical_error_message_box.assert_called_once_with(
+                message='The file "file.ext" you supplied is compressed. You must decompress it before import.')
+            self.assertTrue(result)
+
+    def is_compressed_not_compressed_test(self):
+        """
+        Test is_compressed when the 'file' being tested is compressed
+        """
+        # GIVEN: An instance of BibleImport and a mocked is_zipfile which returns True
+        with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=False):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling is_compressed
+            result = instance.is_compressed('file.ext')
+
+            # THEN: False should be returned and critical_error_message_box should not have been called
+            self.assertFalse(result)
+            self.assertFalse(self.mocked_critical_error_message_box.called)
 
     def parse_xml_etree_test(self):
         """
@@ -261,27 +344,6 @@ class TestBibleImport(TestCase):
 
     def parse_xml_file_file_not_found_exception_test(self):
         """
-        Test that validate_xml_file raises a ValidationError with an OpenSong root tag
-        """
-        # GIVEN: A mocked open which raises a FileNotFoundError and an instance of BibleImporter
-        exception = FileNotFoundError()
-        exception.filename = 'file.tst'
-        exception.strerror = 'No such file or directory'
-        self.mocked_open.side_effect = exception
-        importer = BibleImport(MagicMock(), path='.', name='.', filename='')
-
-        # WHEN: Calling parse_xml
-        result = importer.parse_xml('file.tst')
-
-        # THEN: parse_xml should have caught the error, informed the user and returned None
-        self.mocked_log.exception.assert_called_once_with('Opening file.tst failed.')
-        self.mocked_critical_error_message_box.assert_called_once_with(
-            title='An Error Occured When Opening A File',
-            message='The following error occurred when trying to open\nfile.tst:\n\nNo such file or directory')
-        self.assertIsNone(result)
-
-    def parse_xml_file_file_not_found_exception_test(self):
-        """
         Test that parse_xml handles a FileNotFoundError exception correctly
         """
         with patch.object(BibleImport, 'log_exception') as mocked_log_exception:
@@ -323,6 +385,20 @@ class TestBibleImport(TestCase):
                 title='An Error Occured When Opening A File',
                 message='The following error occurred when trying to open\nfile.tst:\n\nPermission denied')
             self.assertIsNone(result)
+
+    def set_current_chapter_test(self):
+        """
+        Test set_current_chapter
+        """
+        # GIVEN: An instance of BibleImport and a mocked wizard
+        importer = BibleImport(MagicMock(), path='.', name='.', filename='')
+        importer.wizard = MagicMock()
+
+        # WHEN: Calling set_current_chapter
+        importer.set_current_chapter('Book_Name', 'Chapter')
+
+        # THEN: Increment_progress_bar should have been called with a text string
+        importer.wizard.increment_progress_bar.assert_called_once_with('Importing Book_Name Chapter...')
 
     def validate_xml_file_compressed_file_test(self):
         """

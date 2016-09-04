@@ -48,7 +48,7 @@ class TestCSVImport(TestCase):
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
         self.addCleanup(self.manager_patcher.stop)
         self.manager_patcher.start()
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
         self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
 
