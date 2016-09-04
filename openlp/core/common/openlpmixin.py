@@ -71,6 +71,12 @@ class OpenLPMixin(object):
         """
         self.logger.info(message)
 
+    def log_warning(self, message):
+        """
+        Common log warning handler
+        """
+        self.logger.warning(message)
+
     def log_error(self, message):
         """
         Common log error handler which prints the calling path

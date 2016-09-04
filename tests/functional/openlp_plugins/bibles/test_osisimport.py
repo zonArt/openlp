@@ -32,8 +32,7 @@ from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BibleDB
 from openlp.plugins.bibles.lib.importers.osis import OSISBible
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                         '..', '..', '..', 'resources', 'bibles'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),  '..', '..', '..', 'resources', 'bibles'))
 
 
 class TestOsisImport(TestCase):
@@ -354,7 +353,7 @@ class TestOsisImport(TestCase):
         Test do_import when parse_xml fails (returns None)
         """
         # GIVEN: An instance of OpenSongBible and a mocked parse_xml which returns False
-        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+        with patch.object(OSISBible, 'log_debug'), \
                 patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml', return_value=None), \
                 patch.object(OSISBible, 'get_language_id') as mocked_language_id:
@@ -372,7 +371,7 @@ class TestOsisImport(TestCase):
         Test do_import when the user cancels the language selection dialog
         """
         # GIVEN: An instance of OpenSongBible and a mocked get_language which returns False
-        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+        with patch.object(OSISBible, 'log_debug'), \
                 patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml'), \
                 patch.object(OSISBible, 'get_language_id', **{'return_value': False}), \
@@ -391,7 +390,7 @@ class TestOsisImport(TestCase):
         Test do_import when it completes successfully
         """
         # GIVEN: An instance of OpenSongBible
-        with patch('openlp.plugins.bibles.lib.importers.opensong.log'), \
+        with patch.object(OSISBible, 'log_debug'), \
                 patch.object(OSISBible, 'validate_xml_file'), \
                 patch.object(OSISBible, 'parse_xml'), \
                 patch.object(OSISBible, 'get_language_id', **{'return_value': 10}), \

@@ -20,17 +20,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
-
 from lxml import etree, objectify
 from zipfile import is_zipfile
 
-from openlp.core.common import OpenLPMixin, languages, trace_error_handler, translate
+from openlp.core.common import OpenLPMixin, languages, translate
 from openlp.core.lib import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
-
-log = logging.getLogger(__name__)
 
 
 class BibleImport(OpenLPMixin, BibleDB):
@@ -78,8 +74,8 @@ class BibleImport(OpenLPMixin, BibleDB):
             language_id = self.get_language(bible_name)
         if not language_id:
             # User cancelled get_language dialog
-            log.error('Language detection failed when importing from "{name}". User aborted language selection.'
-                      .format(name=bible_name))
+            self.log_error('Language detection failed when importing from "{name}". User aborted language selection.'
+                           .format(name=bible_name))
             return None
         self.save_meta('language_id', language_id)
         return language_id
@@ -97,7 +93,7 @@ class BibleImport(OpenLPMixin, BibleDB):
         if name:
             book_ref_id = self.get_book_ref_id_by_name(name, no_of_books, language_id)
         else:
-            log.debug('No book name supplied. Falling back to guess_id')
+            self.log_debug('No book name supplied. Falling back to guess_id')
             book_ref_id = guess_id
         if not book_ref_id:
             raise ValidationError(msg='Could not resolve book_ref_id in "{}"'.format(self.filename))
@@ -135,8 +131,7 @@ class BibleImport(OpenLPMixin, BibleDB):
                     etree.strip_tags(tree, tags)
                 return tree.getroot()
         except OSError as e:
-            log.exception('Opening {file_name} failed.'.format(file_name=e.filename))
-            trace_error_handler(log)
+            self.log_exception('Opening {file_name} failed.'.format(file_name=e.filename))
             critical_error_message_box(
                 title='An Error Occured When Opening A File',
                 message='The following error occurred when trying to open\n{file_name}:\n\n{error}'

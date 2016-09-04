@@ -50,15 +50,12 @@ There are two acceptable formats of the verses file.  They are:
 All CSV files are expected to use a comma (',') as the delimiter and double quotes ('"') as the quote symbol.
 """
 import csv
-import logging
 from collections import namedtuple
 
 from openlp.core.common import get_file_encoding, translate
 from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 
-
-log = logging.getLogger(__name__)
 
 Book = namedtuple('Book', 'id, testament_id, name, abbreviation')
 Verse = namedtuple('Verse', 'book_id_name, chapter_number, number, text')
@@ -68,15 +65,13 @@ class CSVBible(BibleImport):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
-    log.info('CSVBible loaded')
-
     def __init__(self, *args, **kwargs):
         """
         Loads a Bible from a set of CSV files. This class assumes the files contain all the information and a clean
         bible is being loaded.
         """
-        log.info(self.__class__.__name__)
         super().__init__(*args, **kwargs)
+        self.log_info(self.__class__.__name__)
         self.books_file = kwargs['booksfile']
         self.verses_file = kwargs['versefile']
 

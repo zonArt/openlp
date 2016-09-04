@@ -281,16 +281,14 @@ class TestCSVImport(TestCase):
         """
         # GIVEN: An instance of CSVBible and a mocked get_language which simulates the user cancelling the language box
         mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
+        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             importer.get_language = MagicMock(return_value=None)
 
             # WHEN: Calling do_import
             result = importer.do_import('Bible Name')
 
-            # THEN: The log.exception method should have been called to show that it reached the except clause.
-            # False should be returned.
+            # THEN: The False should be returned.
             importer.get_language.assert_called_once_with('Bible Name')
             self.assertFalse(result)
 
@@ -300,8 +298,7 @@ class TestCSVImport(TestCase):
         """
         # GIVEN: An instance of CSVBible
         mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
+        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
             importer.get_language = MagicMock(return_value=10)
             importer.parse_csv_file = MagicMock(side_effect=[['Book 1'], ['Verse 1']])
@@ -314,9 +311,8 @@ class TestCSVImport(TestCase):
             # WHEN: Calling do_import
             result = importer.do_import('Bible Name')
 
-            # THEN: log.exception should not be called, parse_csv_file should be called twice,
+            # THEN: parse_csv_file should be called twice,
             # and True should be returned.
-            self.assertFalse(mocked_log.exception.called)
             self.assertEqual(importer.parse_csv_file.mock_calls, [call('books.csv', Book), call('verses.csv', Verse)])
             importer.process_books.assert_called_once_with(['Book 1'])
             importer.process_verses.assert_called_once_with(['Verse 1'], ['Book 1'])

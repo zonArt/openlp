@@ -20,16 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
-from lxml import etree
-
-from openlp.core.common import trace_error_handler, translate
-from openlp.core.lib.exceptions import ValidationError
-from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-
-
-log = logging.getLogger(__name__)
 
 
 def get_text(element):
@@ -62,32 +53,32 @@ def parse_chapter_number(number, previous_number):
     return previous_number + 1
 
 
-def parse_verse_number(number, previous_number):
-    """
-    Parse the verse number retrieved from the xml
-
-    :param number: The raw data from the xml
-    :param previous_number: The previous verse number
-    :return: Number of current verse. (Int)
-    """
-    if not number:
-        return previous_number + 1
-    try:
-        return int(number)
-    except ValueError:
-        verse_parts = number.split('-')
-        if len(verse_parts) > 1:
-            number = int(verse_parts[0])
-            return number
-    except TypeError:
-        log.warning('Illegal verse number: {verse_no}'.format(verse_no=str(number)))
-    return previous_number + 1
-
-
 class OpenSongBible(BibleImport):
     """
     OpenSong Bible format importer class. This class is used to import Bibles from OpenSong's XML format.
     """
+
+    def parse_verse_number(self, number, previous_number):
+        """
+        Parse the verse number retrieved from the xml
+
+        :param number: The raw data from the xml
+        :param previous_number: The previous verse number
+        :return: Number of current verse. (Int)
+        """
+        if not number:
+            return previous_number + 1
+        try:
+            return int(number)
+        except ValueError:
+            verse_parts = number.split('-')
+            if len(verse_parts) > 1:
+                number = int(verse_parts[0])
+                return number
+        except TypeError:
+            self.log_warning('Illegal verse number: {verse_no}'.format(verse_no=str(number)))
+        return previous_number + 1
+
     def process_books(self, books):
         """
         Extract and create the books from the objectified xml
@@ -131,7 +122,7 @@ class OpenSongBible(BibleImport):
         for verse in verses:
             if self.stop_import_flag:
                 break
-            verse_number = parse_verse_number(verse.attrib['n'], verse_number)
+            verse_number = self.parse_verse_number(verse.attrib['n'], verse_number)
             self.create_verse(book.id, chapter_number, verse_number, get_text(verse))
 
     def do_import(self, bible_name=None):
@@ -141,7 +132,7 @@ class OpenSongBible(BibleImport):
         :param bible_name: The name of the bible being imported
         :return: True if import completed, False if import was unsuccessful
         """
-        log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
+        self.log_debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
         self.validate_xml_file(self.filename, 'bible')
         bible = self.parse_xml(self.filename, use_objectify=True)
         if bible is None:

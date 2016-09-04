@@ -20,12 +20,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 from lxml import etree
 
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-
-log = logging.getLogger(__name__)
 
 NS = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
 # Tags we don't use and can remove the content
@@ -162,7 +159,7 @@ class OSISBible(BibleImport):
         """
         Loads a Bible from file.
         """
-        log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
+        self.log_debug('Starting OSIS import from "{name}"'.format(name=self.filename))
         self.validate_xml_file(self.filename, '{http://www.bibletechnologies.net/2003/osis/namespace}osis')
         bible = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
         if bible is None:

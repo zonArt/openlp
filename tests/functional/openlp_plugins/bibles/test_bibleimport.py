@@ -32,7 +32,7 @@ from openlp.core.common.languages import Language
 from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BibleDB
-from tests.functional import ANY, MagicMock, patch
+from tests.functional import MagicMock, patch
 
 
 class TestBibleImport(TestCase):
@@ -51,9 +51,6 @@ class TestBibleImport(TestCase):
         self.open_patcher = patch('builtins.open')
         self.addCleanup(self.open_patcher.stop)
         self.mocked_open = self.open_patcher.start()
-        self.log_patcher = patch('openlp.plugins.bibles.lib.bibleimport.log')
-        self.addCleanup(self.log_patcher.stop)
-        self.mocked_log = self.log_patcher.start()
         self.critical_error_message_box_patcher = \
             patch('openlp.plugins.bibles.lib.bibleimport.critical_error_message_box')
         self.addCleanup(self.critical_error_message_box_patcher.stop)
@@ -61,9 +58,6 @@ class TestBibleImport(TestCase):
         self.setup_patcher = patch('openlp.plugins.bibles.lib.db.BibleDB._setup')
         self.addCleanup(self.setup_patcher.stop)
         self.setup_patcher.start()
-        self.trace_error_handler_patcher = patch('openlp.plugins.bibles.lib.bibleimport.trace_error_handler')
-        self.addCleanup(self.trace_error_handler_patcher.stop)
-        self.mocked_trace_error_handler = self.trace_error_handler_patcher.start()
         self.translate_patcher = patch('openlp.plugins.bibles.lib.bibleimport.translate',
                                        side_effect=lambda module, string_to_translate, *args: string_to_translate)
         self.addCleanup(self.translate_patcher.stop)
@@ -101,7 +95,7 @@ class TestBibleImport(TestCase):
         # GIVEN: A mocked languages.get_language which returns language and an instance of BibleImport
         with patch('openlp.core.common.languages.get_language', return_value=Language(30, 'English', 'en')) \
                 as mocked_languages_get_language, \
-                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language') as mocked_db_get_language:
+                patch.object(BibleImport, 'get_language') as mocked_db_get_language:
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()
 
@@ -120,7 +114,7 @@ class TestBibleImport(TestCase):
         """
         # GIVEN: A mocked languages.get_language which returns language and an instance of BibleImport
         with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
-                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=20) as mocked_db_get_language:
+                patch.object(BibleImport, 'get_language', return_value=20) as mocked_db_get_language:
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()
 
@@ -140,8 +134,8 @@ class TestBibleImport(TestCase):
         # GIVEN: A mocked languages.get_language which returns None a mocked BibleDB.get_language which returns a
         #       language id.
         with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
-                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=40) as mocked_db_get_language:
-            self.mocked_log.error.reset_mock()
+                patch.object(BibleImport, 'get_language', return_value=40) as mocked_db_get_language, \
+                patch.object(BibleImport, 'log_error') as mocked_log_error:
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()
 
@@ -151,7 +145,7 @@ class TestBibleImport(TestCase):
             # THEN: The id of the language returned from BibleDB.get_language should be returned
             mocked_languages_get_language.assert_called_once_with('English')
             mocked_db_get_language.assert_called_once_with('KJV')
-            self.assertFalse(self.mocked_log.error.called)
+            self.assertFalse(mocked_log_error.error.called)
             instance.save_meta.assert_called_once_with('language_id', 40)
             self.assertEqual(result, 40)
 
@@ -162,8 +156,8 @@ class TestBibleImport(TestCase):
         # GIVEN: A mocked languages.get_language which returns None a mocked BibleDB.get_language which returns a
         #       language id.
         with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
-                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=None) as mocked_db_get_language:
-            self.mocked_log.error.reset_mock()
+                patch.object(BibleImport, 'get_language', return_value=None) as mocked_db_get_language, \
+                patch.object(BibleImport, 'log_error') as mocked_log_error:
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()
 
@@ -173,7 +167,7 @@ class TestBibleImport(TestCase):
             # THEN: None should be returned and an error should be logged
             mocked_languages_get_language.assert_called_once_with('Qwerty')
             mocked_db_get_language.assert_called_once_with('KJV')
-            self.mocked_log.error.assert_called_once_with(
+            mocked_log_error.assert_called_once_with(
                 'Language detection failed when importing from "KJV". User aborted language selection.')
             self.assertFalse(instance.save_meta.called)
             self.assertIsNone(result)
@@ -281,7 +275,6 @@ class TestBibleImport(TestCase):
 
         # THEN: parse_xml should have caught the error, informed the user and returned None
         self.mocked_log.exception.assert_called_once_with('Opening file.tst failed.')
-        self.mocked_trace_error_handler.assert_called_once_with(self.mocked_log)
         self.mocked_critical_error_message_box.assert_called_once_with(
             title='An Error Occured When Opening A File',
             message='The following error occurred when trying to open\nfile.tst:\n\nNo such file or directory')
@@ -291,45 +284,45 @@ class TestBibleImport(TestCase):
         """
         Test that parse_xml handles a FileNotFoundError exception correctly
         """
-        # GIVEN: A mocked open which raises a FileNotFoundError and an instance of BibleImporter
-        exception = FileNotFoundError()
-        exception.filename = 'file.tst'
-        exception.strerror = 'No such file or directory'
-        self.mocked_open.side_effect = exception
-        importer = BibleImport(MagicMock(), path='.', name='.', filename='')
+        with patch.object(BibleImport, 'log_exception') as mocked_log_exception:
+            # GIVEN: A mocked open which raises a FileNotFoundError and an instance of BibleImporter
+            exception = FileNotFoundError()
+            exception.filename = 'file.tst'
+            exception.strerror = 'No such file or directory'
+            self.mocked_open.side_effect = exception
+            importer = BibleImport(MagicMock(), path='.', name='.', filename='')
 
-        # WHEN: Calling parse_xml
-        result = importer.parse_xml('file.tst')
+            # WHEN: Calling parse_xml
+            result = importer.parse_xml('file.tst')
 
-        # THEN: parse_xml should have caught the error, informed the user and returned None
-        self.mocked_log.exception.assert_called_once_with('Opening file.tst failed.')
-        self.mocked_trace_error_handler.assert_called_once_with(self.mocked_log)
-        self.mocked_critical_error_message_box.assert_called_once_with(
-            title='An Error Occured When Opening A File',
-            message='The following error occurred when trying to open\nfile.tst:\n\nNo such file or directory')
-        self.assertIsNone(result)
+            # THEN: parse_xml should have caught the error, informed the user and returned None
+            mocked_log_exception.assert_called_once_with('Opening file.tst failed.')
+            self.mocked_critical_error_message_box.assert_called_once_with(
+                title='An Error Occured When Opening A File',
+                message='The following error occurred when trying to open\nfile.tst:\n\nNo such file or directory')
+            self.assertIsNone(result)
 
     def parse_xml_file_permission_error_exception_test(self):
         """
         Test that parse_xml handles a PermissionError exception correctly
         """
-        # GIVEN: A mocked open which raises a PermissionError and an instance of BibleImporter
-        exception = PermissionError()
-        exception.filename = 'file.tst'
-        exception.strerror = 'Permission denied'
-        self.mocked_open.side_effect = exception
-        importer = BibleImport(MagicMock(), path='.', name='.', filename='')
+        with patch.object(BibleImport, 'log_exception') as mocked_log_exception:
+            # GIVEN: A mocked open which raises a PermissionError and an instance of BibleImporter
+            exception = PermissionError()
+            exception.filename = 'file.tst'
+            exception.strerror = 'Permission denied'
+            self.mocked_open.side_effect = exception
+            importer = BibleImport(MagicMock(), path='.', name='.', filename='')
 
-        # WHEN: Calling parse_xml
-        result = importer.parse_xml('file.tst')
+            # WHEN: Calling parse_xml
+            result = importer.parse_xml('file.tst')
 
-        # THEN: parse_xml should have caught the error, informed the user and returned None
-        self.mocked_log.exception.assert_called_once_with('Opening file.tst failed.')
-        self.mocked_trace_error_handler.assert_called_once_with(self.mocked_log)
-        self.mocked_critical_error_message_box.assert_called_once_with(
-            title='An Error Occured When Opening A File',
-            message='The following error occurred when trying to open\nfile.tst:\n\nPermission denied')
-        self.assertIsNone(result)
+            # THEN: parse_xml should have caught the error, informed the user and returned None
+            mocked_log_exception.assert_called_once_with('Opening file.tst failed.')
+            self.mocked_critical_error_message_box.assert_called_once_with(
+                title='An Error Occured When Opening A File',
+                message='The following error occurred when trying to open\nfile.tst:\n\nPermission denied')
+            self.assertIsNone(result)
 
     def validate_xml_file_compressed_file_test(self):
         """
