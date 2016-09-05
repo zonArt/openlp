@@ -37,6 +37,7 @@ class BibleImport(OpenLPMixin, RegistryProperties, BibleDB):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
         self.wizard = None
+        self.stop_import_flag = False
         Registry().register_function('openlp_stop_wizard', self.stop_import)
 
     @staticmethod

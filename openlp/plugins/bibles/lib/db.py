@@ -140,7 +140,6 @@ class BibleDB(Manager):
             raise KeyError('Missing keyword argument "path".')
         if 'name' not in kwargs and 'file' not in kwargs:
             raise KeyError('Missing keyword argument "name" or "file".')
-        self.stop_import_flag = False
         if 'name' in kwargs:
             self.name = kwargs['name']
             if not isinstance(self.name, str):
