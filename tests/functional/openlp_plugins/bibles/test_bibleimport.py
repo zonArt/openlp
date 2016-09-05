@@ -27,6 +27,7 @@ from io import BytesIO
 from lxml import etree, objectify
 
 from unittest import TestCase
+from PyQt5.QtWidgets import QDialog
 
 from openlp.core.common.languages import Language
 from openlp.core.lib.exceptions import ValidationError
@@ -223,6 +224,100 @@ class TestBibleImport(TestCase):
             self.assertFalse(instance.save_meta.called)
             self.assertIsNone(result)
 
+    def get_book_ref_id_by_name_get_book_test(self):
+        """
+        Test get_book_ref_id_by_name when the book is found as a book in BiblesResourcesDB
+        """
+        # GIVEN: An instance of BibleImport and a mocked BiblesResourcesDB which returns a book id when get_book is
+        #        called
+        with patch.object(BibleImport, 'log_debug'), \
+                patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                      **{'get_book.return_value':{'id': 20}}):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling get_book_ref_id_by_name
+            result = instance.get_book_ref_id_by_name('Gen', 66, 4)
+
+            # THEN: The bible id should be returned
+            self.assertEqual(result,20)
+
+    def get_book_ref_id_by_name_get_alternative_book_name_test(self):
+        """
+        Test get_book_ref_id_by_name when the book is found as an alternative book in BiblesResourcesDB
+        """
+        # GIVEN: An instance of BibleImport and a mocked BiblesResourcesDB which returns a book id when
+        #        get_alternative_book_name is called
+        with patch.object(BibleImport, 'log_debug'), \
+                patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                      **{'get_book.return_value': None, 'get_alternative_book_name.return_value': 30}):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling get_book_ref_id_by_name
+            result = instance.get_book_ref_id_by_name('Gen', 66, 4)
+
+            # THEN: The bible id should be returned
+            self.assertEqual(result, 30)
+
+    def get_book_ref_id_by_name_get_book_reference_id_test(self):
+        """
+        Test get_book_ref_id_by_name when the book is found as a book in AlternativeBookNamesDB
+        """
+        # GIVEN: An instance of BibleImport and a mocked AlternativeBookNamesDB which returns a book id when
+        #        get_book_reference_id is called
+        with patch.object(BibleImport, 'log_debug'), \
+                patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                   **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
+                patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
+                      **{'get_book_reference_id.return_value': 40}):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling get_book_ref_id_by_name
+            result = instance.get_book_ref_id_by_name('Gen', 66, 4)
+
+            # THEN: The bible id should be returned
+            self.assertEqual(result, 40)
+
+    def get_book_ref_id_by_name_book_name_form_rejected_test(self):
+        """
+        Test get_book_ref_id_by_name when the user rejects the BookNameForm
+        """
+        # GIVEN: An instance of BibleImport and a mocked BookNameForm which simulates a user rejecting the dialog
+        with patch.object(BibleImport, 'log_debug'), patch.object(BibleImport, 'get_books'), \
+                patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                      **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
+                patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
+                      **{'get_book_reference_id.return_value': None}), \
+                patch('openlp.plugins.bibles.forms.BookNameForm',
+                      return_value=MagicMock(**{'exec.return_value': QDialog.Rejected})):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling get_book_ref_id_by_name
+            result = instance.get_book_ref_id_by_name('Gen', 66, 4)
+
+            # THEN: None should be returned
+            self.assertIsNone(result)
+
+    def get_book_ref_id_by_name_book_name_form_accepted_test(self):
+        """
+        Test get_book_ref_id_by_name when the user accepts the BookNameForm
+        """
+        # GIVEN: An instance of BibleImport and a mocked BookNameForm which simulates a user accepting the dialog
+        with patch.object(BibleImport, 'log_debug'), patch.object(BibleImport, 'get_books'), \
+                 patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                       **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
+                 patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
+                       **{'get_book_reference_id.return_value': None}) as mocked_alternative_book_names_db, \
+                 patch('openlp.plugins.bibles.forms.BookNameForm',
+                       return_value=MagicMock(**{'exec.return_value': QDialog.Accepted, 'book_id':50})):
+            instance = BibleImport(MagicMock())
+
+            # WHEN: Calling get_book_ref_id_by_name
+            result = instance.get_book_ref_id_by_name('Gen', 66, 4)
+
+            # THEN: An alternative book name should be created and a bible id should be returned
+            mocked_alternative_book_names_db.create_alternative_book_name.assert_called_once_with('Gen', 50, 4)
+            self.assertEqual(result, 50)
+
     def is_compressed_compressed_test(self):
         """
         Test is_compressed when the 'file' being tested is compressed
@@ -242,9 +337,9 @@ class TestBibleImport(TestCase):
 
     def is_compressed_not_compressed_test(self):
         """
-        Test is_compressed when the 'file' being tested is compressed
+        Test is_compressed when the 'file' being tested is not compressed
         """
-        # GIVEN: An instance of BibleImport and a mocked is_zipfile which returns True
+        # GIVEN: An instance of BibleImport and a mocked is_zipfile which returns False
         with patch('openlp.plugins.bibles.lib.bibleimport.is_zipfile', return_value=False):
             instance = BibleImport(MagicMock())
 
