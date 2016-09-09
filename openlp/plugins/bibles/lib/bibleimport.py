@@ -55,25 +55,30 @@ class BibleImport(OpenLPMixin, RegistryProperties, BibleDB):
             return True
         return False
 
-    def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
+    def get_book_ref_id_by_name(self, book, maxbooks=66, language_id=None):
+        """
+        Find the book id from the name or abbreviation of the book. If it doesn't currently exist, ask the user.
+
+        :param book: The name or abbreviation of the book
+        :param maxbooks: The number of books in the bible
+        :param language_id: The language_id of the bible
+        :return: The id of the bible, or None
+        """
         self.log_debug('BibleDB.get_book_ref_id_by_name:("{book}", "{lang}")'.format(book=book, lang=language_id))
-        book_id = None
-        if BiblesResourcesDB.get_book(book, True):
-            book_temp = BiblesResourcesDB.get_book(book, True)
-            book_id = book_temp['id']
-        elif BiblesResourcesDB.get_alternative_book_name(book):
-            book_id = BiblesResourcesDB.get_alternative_book_name(book)
-        elif AlternativeBookNamesDB.get_book_reference_id(book):
-            book_id = AlternativeBookNamesDB.get_book_reference_id(book)
-        else:
-            from openlp.plugins.bibles.forms import BookNameForm
-            book_name = BookNameForm(self.wizard)
-            if book_name.exec(book, self.get_books(), maxbooks):
-                book_id = book_name.book_id
-            if book_id:
-                AlternativeBookNamesDB.create_alternative_book_name(
-                    book, book_id, language_id)
-        return book_id
+        book_temp = BiblesResourcesDB.get_book(book, True)
+        if book_temp:
+            return book_temp['id']
+        book_id = BiblesResourcesDB.get_alternative_book_name(book)
+        if book_id:
+            return book_id
+        book_id = AlternativeBookNamesDB.get_book_reference_id(book)
+        if book_id:
+            return book_id
+        from openlp.plugins.bibles.forms import BookNameForm
+        book_name = BookNameForm(self.wizard)
+        if book_name.exec(book, self.get_books(), maxbooks) and book_name.book_id:
+            AlternativeBookNamesDB.create_alternative_book_name(book, book_name.book_id, language_id)
+            return book_name.book_id
 
     def get_language(self, bible_name=None):
         """
