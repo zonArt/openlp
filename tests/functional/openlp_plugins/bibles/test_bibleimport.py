@@ -232,14 +232,14 @@ class TestBibleImport(TestCase):
         #        called
         with patch.object(BibleImport, 'log_debug'), \
                 patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
-                      **{'get_book.return_value':{'id': 20}}):
+                      **{'get_book.return_value': {'id': 20}}):
             instance = BibleImport(MagicMock())
 
             # WHEN: Calling get_book_ref_id_by_name
             result = instance.get_book_ref_id_by_name('Gen', 66, 4)
 
             # THEN: The bible id should be returned
-            self.assertEqual(result,20)
+            self.assertEqual(result, 20)
 
     def get_book_ref_id_by_name_get_alternative_book_name_test(self):
         """
@@ -266,7 +266,7 @@ class TestBibleImport(TestCase):
         #        get_book_reference_id is called
         with patch.object(BibleImport, 'log_debug'), \
                 patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
-                   **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
+                      **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
                 patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
                       **{'get_book_reference_id.return_value': 40}):
             instance = BibleImport(MagicMock())
@@ -303,12 +303,12 @@ class TestBibleImport(TestCase):
         """
         # GIVEN: An instance of BibleImport and a mocked BookNameForm which simulates a user accepting the dialog
         with patch.object(BibleImport, 'log_debug'), patch.object(BibleImport, 'get_books'), \
-                 patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
-                       **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
-                 patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
-                       **{'get_book_reference_id.return_value': None}) as mocked_alternative_book_names_db, \
-                 patch('openlp.plugins.bibles.forms.BookNameForm',
-                       return_value=MagicMock(**{'exec.return_value': QDialog.Accepted, 'book_id':50})):
+                patch('openlp.plugins.bibles.lib.bibleimport.BiblesResourcesDB',
+                      **{'get_book.return_value': None, 'get_alternative_book_name.return_value': None}), \
+                patch('openlp.plugins.bibles.lib.bibleimport.AlternativeBookNamesDB',
+                      **{'get_book_reference_id.return_value': None}) as mocked_alternative_book_names_db, \
+                patch('openlp.plugins.bibles.forms.BookNameForm',
+                      return_value=MagicMock(**{'exec.return_value': QDialog.Accepted, 'book_id': 50})):
             instance = BibleImport(MagicMock())
 
             # WHEN: Calling get_book_ref_id_by_name

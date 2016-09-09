@@ -32,7 +32,7 @@ from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BibleDB
 from openlp.plugins.bibles.lib.importers.osis import OSISBible
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),  '..', '..', '..', 'resources', 'bibles'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'bibles'))
 
 
 class TestOsisImport(TestCase):
