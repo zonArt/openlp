@@ -54,7 +54,7 @@ class ZefaniaBible(BibleImport):
             language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
             if not language_id:
                 return False
-            num_books = int(xmlbible.xpath('count(//BIBLEBOOK)'))
+            no_of_books = int(xmlbible.xpath('count(//BIBLEBOOK)'))
             self.wizard.progress_bar.setMaximum(int(xmlbible.xpath('count(//CHAPTER)')))
             for BIBLEBOOK in xmlbible:
                 if self.stop_import_flag:
@@ -64,7 +64,7 @@ class ZefaniaBible(BibleImport):
                 if not bname and not bnumber:
                     continue
                 if bname:
-                    book_ref_id = self.get_book_ref_id_by_name(bname, num_books, language_id)
+                    book_ref_id = self.get_book_ref_id_by_name(bname, no_of_books, language_id)
                 else:
                     log.debug('Could not find a name, will use number, basically a guess.')
                     book_ref_id = int(bnumber)
@@ -79,7 +79,8 @@ class ZefaniaBible(BibleImport):
                     chapter_number = CHAPTER.get("cnumber")
                     for VERS in CHAPTER:
                         verse_number = VERS.get("vnumber")
-                        self.create_verse(db_book.id, chapter_number, verse_number, VERS.text.replace('<BR/>', '\n'))
+                        self.create_verse(
+                            db_book.id, int(chapter_number), int(verse_number), VERS.text.replace('<BR/>', '\n'))
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.Zefnia',
                                   'Importing {book} {chapter}...').format(book=db_book.name,

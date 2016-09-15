@@ -25,6 +25,7 @@ The bible import functions for OpenLP
 import logging
 import os
 import urllib.error
+from lxml import etree
 
 from PyQt5 import QtWidgets
 try:
@@ -33,14 +34,15 @@ try:
 except:
     PYSWORD_AVAILABLE = False
 
-from openlp.core.common import AppLocation, Settings, UiStrings, translate, clean_filename
+from openlp.core.common import AppLocation, Settings, UiStrings, trace_error_handler, translate
+from openlp.core.common.languagemanager import get_locale_key
 from openlp.core.lib.db import delete_database
+from openlp.core.lib.exceptions import ValidationError
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
-from openlp.core.common.languagemanager import get_locale_key
-from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import clean_filename
 from openlp.plugins.bibles.lib.importers.http import CWExtract, BGExtract, BSExtract
+from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
 
@@ -809,16 +811,22 @@ class BibleImportForm(OpenLPWizard):
                                                      sword_path=self.field('sword_zip_path'),
                                                      sword_key=self.sword_zipbible_combo_box.itemData(
                                                          self.sword_zipbible_combo_box.currentIndex()))
-        if importer.do_import(license_version):
-            self.manager.save_meta_data(license_version, license_version, license_copyright, license_permissions)
-            self.manager.reload_bibles()
-            if bible_type == BibleFormat.WebDownload:
-                self.progress_label.setText(
-                    translate('BiblesPlugin.ImportWizardForm', 'Registered Bible. Please note, that verses will be '
-                              'downloaded on demand and thus an internet connection is required.'))
-            else:
-                self.progress_label.setText(WizardStrings.FinishedImport)
-        else:
-            self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
-            del self.manager.db_cache[importer.name]
-            delete_database(self.plugin.settings_section, importer.file)
+
+        try:
+            if importer.do_import(license_version) and not importer.stop_import_flag:
+                self.manager.save_meta_data(license_version, license_version, license_copyright, license_permissions)
+                self.manager.reload_bibles()
+                if bible_type == BibleFormat.WebDownload:
+                    self.progress_label.setText(
+                        translate('BiblesPlugin.ImportWizardForm', 'Registered Bible. Please note, that verses will be '
+                                  'downloaded on demand and thus an internet connection is required.'))
+                else:
+                    self.progress_label.setText(WizardStrings.FinishedImport)
+                return
+        except (AttributeError, ValidationError, etree.XMLSyntaxError):
+            log.exception('Importing bible failed')
+            trace_error_handler(log)
+
+        self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
+        del self.manager.db_cache[importer.name]
+        delete_database(self.plugin.settings_section, importer.file)

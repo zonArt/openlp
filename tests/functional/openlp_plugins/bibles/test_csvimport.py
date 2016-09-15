@@ -46,10 +46,10 @@ class TestCSVImport(TestCase):
 
     def setUp(self):
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
         self.addCleanup(self.manager_patcher.stop)
-        self.addCleanup(self.registry_patcher.stop)
         self.manager_patcher.start()
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
+        self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
 
     def test_create_importer(self):
@@ -194,9 +194,9 @@ class TestCSVImport(TestCase):
             # WHEN: Calling process_books
             result = importer.process_books(['Book 1'])
 
-            # THEN: increment_progress_bar should not be called and the return value should be None
+            # THEN: increment_progress_bar should not be called and the return value should be an empty dictionary
             self.assertFalse(importer.wizard.increment_progress_bar.called)
-            self.assertIsNone(result)
+            self.assertEqual(result, {})
 
     def process_books_test(self):
         """
@@ -207,7 +207,6 @@ class TestCSVImport(TestCase):
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
                 patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.find_and_create_book = MagicMock()
             importer.language_id = 10
             importer.stop_import_flag = False
@@ -222,7 +221,6 @@ class TestCSVImport(TestCase):
             # 		The returned data should be a dictionary with both song's id and names.
             self.assertEqual(importer.find_and_create_book.mock_calls,
                              [call('1. Mosebog', 2, 10), call('2. Mosebog', 2, 10)])
-            importer.application.process_events.assert_called_once_with()
             self.assertDictEqual(result, {1: '1. Mosebog', 2: '2. Mosebog'})
 
     def process_verses_stopped_import_test(self):
@@ -233,19 +231,16 @@ class TestCSVImport(TestCase):
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.get_book_name = MagicMock()
             importer.session = MagicMock()
             importer.stop_import_flag = True
             importer.wizard = MagicMock()
 
             # WHEN: Calling process_verses
-            result = importer.process_verses([], [])
+            result = importer.process_verses(['Dummy Verse'], [])
 
             # THEN: get_book_name should not be called and the return value should be None
             self.assertFalse(importer.get_book_name.called)
-            importer.wizard.increment_progress_bar.assert_called_once_with('Importing verses... done.')
-            importer.application.process_events.assert_called_once_with()
             self.assertIsNone(result)
 
     def process_verses_successful_test(self):
@@ -257,7 +252,6 @@ class TestCSVImport(TestCase):
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
                 patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            type(importer).application = PropertyMock()
             importer.create_verse = MagicMock()
             importer.get_book = MagicMock(return_value=Book('1', '1', '1. Mosebog', '1Mos'))
             importer.get_book_name = MagicMock(return_value='1. Mosebog')
@@ -280,7 +274,6 @@ class TestCSVImport(TestCase):
                              [call('1', 1, 1, 'I Begyndelsen skabte Gud Himmelen og Jorden.'),
                               call('1', 1, 2, 'Og Jorden var øde og tom, og der var Mørke over Verdensdybet. '
                                               'Men Guds Ånd svævede over Vandene.')])
-            importer.application.process_events.assert_called_once_with()
 
     def do_import_invalid_language_id_test(self):
         """
@@ -288,73 +281,16 @@ class TestCSVImport(TestCase):
         """
         # GIVEN: An instance of CSVBible and a mocked get_language which simulates the user cancelling the language box
         mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
+        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             importer.get_language = MagicMock(return_value=None)
 
             # WHEN: Calling do_import
             result = importer.do_import('Bible Name')
 
-            # THEN: The log.exception method should have been called to show that it reached the except clause.
-            # False should be returned.
+            # THEN: The False should be returned.
             importer.get_language.assert_called_once_with('Bible Name')
-            mocked_log.exception.assert_called_once_with('Could not import CSV bible')
             self.assertFalse(result)
-
-    def do_import_stop_import_test(self):
-        """
-        Test do_import when the import is stopped
-        """
-        # GIVEN: An instance of CSVBible with stop_import set to True
-        mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
-            importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
-            importer.get_language = MagicMock(return_value=10)
-            importer.parse_csv_file = MagicMock(return_value=['Book 1', 'Book 2', 'Book 3'])
-            importer.process_books = MagicMock()
-            importer.stop_import_flag = True
-            importer.wizard = MagicMock()
-
-            # WHEN: Calling do_import
-            result = importer.do_import('Bible Name')
-
-            # THEN: log.exception should not be called, parse_csv_file should only be called once,
-            # and False should be returned.
-            self.assertFalse(mocked_log.exception.called)
-            importer.parse_csv_file.assert_called_once_with('books.csv', Book)
-            importer.process_books.assert_called_once_with(['Book 1', 'Book 2', 'Book 3'])
-            self.assertFalse(result)
-
-    def do_import_stop_import_2_test(self):
-        """
-        Test do_import when the import is stopped
-        """
-        # GIVEN: An instance of CSVBible with stop_import which is True the second time of calling
-        mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
-            CSVBible.stop_import_flag = PropertyMock(side_effect=[False, True])
-            importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
-            importer.get_language = MagicMock(return_value=10)
-            importer.parse_csv_file = MagicMock(side_effect=[['Book 1'], ['Verse 1']])
-            importer.process_books = MagicMock(return_value=['Book 1'])
-            importer.process_verses = MagicMock(return_value=['Verse 1'])
-            importer.wizard = MagicMock()
-
-            # WHEN: Calling do_import
-            result = importer.do_import('Bible Name')
-
-            # THEN: log.exception should not be called, parse_csv_file should be called twice,
-            # and False should be returned.
-            self.assertFalse(mocked_log.exception.called)
-            self.assertEqual(importer.parse_csv_file.mock_calls, [call('books.csv', Book), call('verses.csv', Verse)])
-            importer.process_verses.assert_called_once_with(['Verse 1'], ['Book 1'])
-            self.assertFalse(result)
-
-            # Cleanup
-            del CSVBible.stop_import_flag
 
     def do_import_success_test(self):
         """
@@ -362,8 +298,7 @@ class TestCSVImport(TestCase):
         """
         # GIVEN: An instance of CSVBible
         mocked_manager = MagicMock()
-        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
+        with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
             importer.get_language = MagicMock(return_value=10)
             importer.parse_csv_file = MagicMock(side_effect=[['Book 1'], ['Verse 1']])
@@ -376,9 +311,8 @@ class TestCSVImport(TestCase):
             # WHEN: Calling do_import
             result = importer.do_import('Bible Name')
 
-            # THEN: log.exception should not be called, parse_csv_file should be called twice,
+            # THEN: parse_csv_file should be called twice,
             # and True should be returned.
-            self.assertFalse(mocked_log.exception.called)
             self.assertEqual(importer.parse_csv_file.mock_calls, [call('books.csv', Book), call('verses.csv', Verse)])
             importer.process_books.assert_called_once_with(['Book 1'])
             importer.process_verses.assert_called_once_with(['Verse 1'], ['Book 1'])
@@ -413,6 +347,6 @@ class TestCSVImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.get_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.get_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('1. Mosebog', importer.get_book_ref_id_by_name(), 1)
             importer.create_book.assert_any_call('1. Krønikebog', importer.get_book_ref_id_by_name(), 1)

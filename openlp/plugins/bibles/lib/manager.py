@@ -23,8 +23,8 @@
 import logging
 import os
 
-from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file, UiStrings
-from openlp.plugins.bibles.lib import parse_reference, LanguageSelection
+from openlp.core.common import AppLocation, OpenLPMixin, RegistryProperties, Settings, translate, delete_file, UiStrings
+from openlp.plugins.bibles.lib import LanguageSelection, parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from .importers.csvbible import CSVBible
 from .importers.http import HTTPBible
@@ -88,7 +88,7 @@ class BibleFormat(object):
         ]
 
 
-class BibleManager(RegistryProperties):
+class BibleManager(OpenLPMixin, RegistryProperties):
     """
     The Bible manager which holds and manages all the Bibles.
     """

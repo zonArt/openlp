@@ -20,25 +20,84 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
-
 from lxml import etree, objectify
+from zipfile import is_zipfile
 
-from openlp.core.common import OpenLPMixin, languages
+from openlp.core.common import OpenLPMixin, Registry, RegistryProperties, languages, translate
 from openlp.core.lib import ValidationError
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.plugins.bibles.lib.db import AlternativeBookNamesDB, BibleDB, BiblesResourcesDB
 
-log = logging.getLogger(__name__)
 
-
-class BibleImport(OpenLPMixin, BibleDB):
+class BibleImport(OpenLPMixin, RegistryProperties, BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
-    # TODO: Test
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
+        self.wizard = None
+        self.stop_import_flag = False
+        Registry().register_function('openlp_stop_wizard', self.stop_import)
+
+    @staticmethod
+    def is_compressed(file):
+        """
+        Check if the supplied file is compressed
+
+        :param file: A path to the file to check
+        """
+        if is_zipfile(file):
+            critical_error_message_box(
+                message=translate('BiblesPlugin.BibleImport',
+                                  'The file "{file}" you supplied is compressed. You must decompress it before import.'
+                                  ).format(file=file))
+            return True
+        return False
+
+    def get_book_ref_id_by_name(self, book, maxbooks=66, language_id=None):
+        """
+        Find the book id from the name or abbreviation of the book. If it doesn't currently exist, ask the user.
+
+        :param book: The name or abbreviation of the book
+        :param maxbooks: The number of books in the bible
+        :param language_id: The language_id of the bible
+        :return: The id of the bible, or None
+        """
+        self.log_debug('BibleDB.get_book_ref_id_by_name:("{book}", "{lang}")'.format(book=book, lang=language_id))
+        book_temp = BiblesResourcesDB.get_book(book, True)
+        if book_temp:
+            return book_temp['id']
+        book_id = BiblesResourcesDB.get_alternative_book_name(book)
+        if book_id:
+            return book_id
+        book_id = AlternativeBookNamesDB.get_book_reference_id(book)
+        if book_id:
+            return book_id
+        from openlp.plugins.bibles.forms import BookNameForm
+        book_name = BookNameForm(self.wizard)
+        if book_name.exec(book, self.get_books(), maxbooks) and book_name.book_id:
+            AlternativeBookNamesDB.create_alternative_book_name(book, book_name.book_id, language_id)
+            return book_name.book_id
+
+    def get_language(self, bible_name=None):
+        """
+        If no language is given it calls a dialog window where the user could  select the bible language.
+        Return the language id of a bible.
+
+        :param bible_name: The language the bible is.
+        """
+        self.log_debug('BibleImpoer.get_language()')
+        from openlp.plugins.bibles.forms import LanguageForm
+        language_id = None
+        language_form = LanguageForm(self.wizard)
+        if language_form.exec(bible_name):
+            combo_box = language_form.language_combo_box
+            language_id = combo_box.itemData(combo_box.currentIndex())
+        if not language_id:
+            return None
+        self.save_meta('language_id', language_id)
+        return language_id
 
     def get_language_id(self, file_language=None, bible_name=None):
         """
@@ -58,8 +117,8 @@ class BibleImport(OpenLPMixin, BibleDB):
             language_id = self.get_language(bible_name)
         if not language_id:
             # User cancelled get_language dialog
-            log.error('Language detection failed when importing from "{name}". User aborted language selection.'
-                      .format(name=bible_name))
+            self.log_error('Language detection failed when importing from "{name}". User aborted language selection.'
+                           .format(name=bible_name))
             return None
         self.save_meta('language_id', language_id)
         return language_id
@@ -77,7 +136,7 @@ class BibleImport(OpenLPMixin, BibleDB):
         if name:
             book_ref_id = self.get_book_ref_id_by_name(name, no_of_books, language_id)
         else:
-            log.debug('No book name supplied. Falling back to guess_id')
+            self.log_debug('No book name supplied. Falling back to guess_id')
             book_ref_id = guess_id
         if not book_ref_id:
             raise ValidationError(msg='Could not resolve book_ref_id in "{}"'.format(self.filename))
@@ -87,8 +146,7 @@ class BibleImport(OpenLPMixin, BibleDB):
                                       'importing {file}'.format(book_ref=book_ref_id, file=self.filename))
         return self.create_book(name, book_ref_id, book_details['testament_id'])
 
-    @staticmethod
-    def parse_xml(filename, use_objectify=False, elements=None, tags=None):
+    def parse_xml(self, filename, use_objectify=False, elements=None, tags=None):
         """
         Parse and clean the supplied file by removing any elements or tags we don't use.
         :param filename: The filename of the xml file to parse. Str
@@ -97,17 +155,80 @@ class BibleImport(OpenLPMixin, BibleDB):
         :param tags: A tuple of element names (Str) to remove, preserving their content.
         :return: The root element of the xml document
         """
-        with open(filename, 'rb') as import_file:
-            # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
-            # detection, and the two mechanisms together interfere with each other.
-            if not use_objectify:
-                tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
-            else:
-                tree = objectify.parse(import_file, parser=objectify.makeparser(recover=True))
-            if elements:
-                # Strip tags we don't use - remove content
-                etree.strip_elements(tree, elements, with_tail=False)
-            if tags:
-                # Strip tags we don't use - keep content
-                etree.strip_tags(tree, tags)
-            return tree.getroot()
+        try:
+            with open(filename, 'rb') as import_file:
+                # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own
+                # encoding detection, and the two mechanisms together interfere with each other.
+                if not use_objectify:
+                    tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
+                else:
+                    tree = objectify.parse(import_file, parser=objectify.makeparser(recover=True))
+                if elements or tags:
+                    self.wizard.increment_progress_bar(
+                        translate('BiblesPlugin.OsisImport', 'Removing unused tags (this may take a few minutes)...'))
+                if elements:
+                    # Strip tags we don't use - remove content
+                    etree.strip_elements(tree, elements, with_tail=False)
+                if tags:
+                    # Strip tags we don't use - keep content
+                    etree.strip_tags(tree, tags)
+                return tree.getroot()
+        except OSError as e:
+            self.log_exception('Opening {file_name} failed.'.format(file_name=e.filename))
+            critical_error_message_box(
+                title='An Error Occured When Opening A File',
+                message='The following error occurred when trying to open\n{file_name}:\n\n{error}'
+                .format(file_name=e.filename, error=e.strerror))
+        return None
+
+    def register(self, wizard):
+        """
+        This method basically just initialises the database. It is called from the Bible Manager when a Bible is
+        imported. Descendant classes may want to override this method to supply their own custom
+        initialisation as well.
+
+        :param wizard: The actual Qt wizard form.
+        """
+        self.wizard = wizard
+        return self.name
+
+    def set_current_chapter(self, book_name, chapter_name):
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing {book} {chapter}...')
+                                           .format(book=book_name, chapter=chapter_name))
+
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        self.log_debug('Stopping import')
+        self.stop_import_flag = True
+
+    def validate_xml_file(self, filename, tag):
+        """
+        Validate the supplied file
+
+        :param filename: The supplied file
+        :param tag: The expected root tag type
+        :return: True if valid. ValidationError is raised otherwise.
+        """
+        if BibleImport.is_compressed(filename):
+            raise ValidationError(msg='Compressed file')
+        bible = self.parse_xml(filename, use_objectify=True)
+        if bible is None:
+            raise ValidationError(msg='Error when opening file')
+        root_tag = bible.tag.lower()
+        bible_type = translate('BiblesPlugin.BibleImport', 'unknown type of',
+                               'This looks like an unknown type of XML bible.')
+        if root_tag == tag:
+            return True
+        elif root_tag == 'bible':
+            bible_type = "OpenSong"
+        elif root_tag == '{http://www.bibletechnologies.net/2003/osis/namespace}osis':
+            bible_type = 'OSIS'
+        elif root_tag == 'xmlbible':
+            bible_type = 'Zefania'
+        critical_error_message_box(
+            message=translate('BiblesPlugin.BibleImport',
+                              'Incorrect Bible file type supplied. This looks like an {bible_type} XML bible.'
+                              .format(bible_type=bible_type)))
+        raise ValidationError(msg='Invalid xml.')

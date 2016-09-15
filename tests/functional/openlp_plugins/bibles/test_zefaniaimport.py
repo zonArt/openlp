@@ -41,14 +41,12 @@ class TestZefaniaImport(TestCase):
     """
 
     def setUp(self):
-        self.registry_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
+        self.registry_patcher = patch('openlp.plugins.bibles.lib.bibleimport.Registry')
+        self.addCleanup(self.registry_patcher.stop)
         self.registry_patcher.start()
         self.manager_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
+        self.addCleanup(self.manager_patcher.stop)
         self.manager_patcher.start()
-
-    def tearDown(self):
-        self.registry_patcher.stop()
-        self.manager_patcher.stop()
 
     def test_create_importer(self):
         """
@@ -90,7 +88,7 @@ class TestZefaniaImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.create_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('Genesis', 1, 1)
 
     def test_file_import_no_book_name(self):
@@ -120,5 +118,5 @@ class TestZefaniaImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+                importer.create_verse.assert_any_call(importer.create_book().id, 1, verse_tag, verse_text)
             importer.create_book.assert_any_call('Exodus', 2, 1)

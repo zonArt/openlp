@@ -173,7 +173,7 @@ class BibleStrings(object):
 
 def update_reference_separators():
     """
-    Updates separators and matches for parsing and formating scripture references.
+    Updates separators and matches for parsing and formatting scripture references.
     """
     default_separators = [
         '|'.join([
@@ -215,7 +215,7 @@ def update_reference_separators():
         # escape reserved characters
         for character in '\\.^$*+?{}[]()':
             source_string = source_string.replace(character, '\\' + character)
-        # add various unicode alternatives
+        # add various Unicode alternatives
         source_string = source_string.replace('-', '(?:[-\u00AD\u2010\u2011\u2012\u2014\u2014\u2212\uFE63\uFF0D])')
         source_string = source_string.replace(',', '(?:[,\u201A])')
         REFERENCE_SEPARATORS['sep_{role}'.format(role=role)] = '\s*(?:{source})\s*'.format(source=source_string)

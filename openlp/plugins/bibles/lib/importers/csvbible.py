@@ -50,15 +50,12 @@ There are two acceptable formats of the verses file.  They are:
 All CSV files are expected to use a comma (',') as the delimiter and double quotes ('"') as the quote symbol.
 """
 import csv
-import logging
 from collections import namedtuple
 
 from openlp.core.common import get_file_encoding, translate
 from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 
-
-log = logging.getLogger(__name__)
 
 Book = namedtuple('Book', 'id, testament_id, name, abbreviation')
 Verse = namedtuple('Verse', 'book_id_name, chapter_number, number, text')
@@ -68,15 +65,13 @@ class CSVBible(BibleImport):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
-    log.info('CSVBible loaded')
-
     def __init__(self, *args, **kwargs):
         """
         Loads a Bible from a set of CSV files. This class assumes the files contain all the information and a clean
         bible is being loaded.
         """
-        log.info(self.__class__.__name__)
         super().__init__(*args, **kwargs)
+        self.log_info(self.__class__.__name__)
         self.books_file = kwargs['booksfile']
         self.verses_file = kwargs['versefile']
 
@@ -123,12 +118,11 @@ class CSVBible(BibleImport):
         number_of_books = len(books)
         for book in books:
             if self.stop_import_flag:
-                return None
+                break
             self.wizard.increment_progress_bar(
                 translate('BiblesPlugin.CSVBible', 'Importing books... {book}').format(book=book.name))
             self.find_and_create_book(book.name, number_of_books, self.language_id)
             book_list.update({int(book.id): book.name})
-        self.application.process_events()
         return book_list
 
     def process_verses(self, verses, books):
@@ -142,7 +136,7 @@ class CSVBible(BibleImport):
         book_ptr = None
         for verse in verses:
             if self.stop_import_flag:
-                return None
+                break
             verse_book = self.get_book_name(verse.book_id_name, books)
             if book_ptr != verse_book:
                 book = self.get_book(verse_book)
@@ -151,9 +145,7 @@ class CSVBible(BibleImport):
                     translate('BiblesPlugin.CSVBible', 'Importing verses from {book}...',
                               'Importing verses from <book name>...').format(book=book.name))
                 self.session.commit()
-            self.create_verse(book.id, verse.chapter_number, verse.number, verse.text)
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
-        self.application.process_events()
+            self.create_verse(book.id, int(verse.chapter_number), int(verse.number), verse.text)
         self.session.commit()
 
     def do_import(self, bible_name=None):
@@ -163,24 +155,16 @@ class CSVBible(BibleImport):
         :param bible_name: Optional name of the bible being imported. Str or None
         :return: True if the import was successful, False if it failed or was cancelled
         """
-        try:
-            self.language_id = self.get_language(bible_name)
-            if not self.language_id:
-                raise ValidationError(msg='Invalid language selected')
-            books = self.parse_csv_file(self.books_file, Book)
-            self.wizard.progress_bar.setValue(0)
-            self.wizard.progress_bar.setMinimum(0)
-            self.wizard.progress_bar.setMaximum(len(books))
-            book_list = self.process_books(books)
-            if self.stop_import_flag:
-                return False
-            verses = self.parse_csv_file(self.verses_file, Verse)
-            self.wizard.progress_bar.setValue(0)
-            self.wizard.progress_bar.setMaximum(len(books) + 1)
-            self.process_verses(verses, book_list)
-            if self.stop_import_flag:
-                return False
-        except ValidationError:
-            log.exception('Could not import CSV bible')
+        self.language_id = self.get_language(bible_name)
+        if not self.language_id:
             return False
+        books = self.parse_csv_file(self.books_file, Book)
+        self.wizard.progress_bar.setValue(0)
+        self.wizard.progress_bar.setMinimum(0)
+        self.wizard.progress_bar.setMaximum(len(books))
+        book_list = self.process_books(books)
+        verses = self.parse_csv_file(self.verses_file, Verse)
+        self.wizard.progress_bar.setValue(0)
+        self.wizard.progress_bar.setMaximum(len(books) + 1)
+        self.process_verses(verses, book_list)
         return True
