@@ -97,6 +97,9 @@ class Ui_EditSongDialog(object):
         self.verse_delete_button = QtWidgets.QPushButton(self.lyrics_tab)
         self.verse_delete_button.setObjectName('verse_delete_button')
         self.verse_buttons_layout.addWidget(self.verse_delete_button)
+        self.verse_translate_button = QtWidgets.QPushButton(self.lyrics_tab)
+        self.verse_translate_button.setObjectName('verse_translate_button')
+        self.verse_buttons_layout.addWidget(self.verse_translate_button)
         self.verse_buttons_layout.addStretch()
         self.lyrics_tab_layout.addLayout(self.verse_buttons_layout, 2, 2)
         self.song_tab_widget.addTab(self.lyrics_tab, '')
@@ -308,6 +311,7 @@ class Ui_EditSongDialog(object):
         self.verse_edit_button.setText(UiStrings().Edit)
         self.verse_edit_all_button.setText(translate('SongsPlugin.EditSongForm', 'Ed&it All'))
         self.verse_delete_button.setText(UiStrings().Delete)
+        self.verse_translate_button.setText(translate('SongsPlugin.EditSongForm', '&Translate'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.lyrics_tab),
                                         translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
         self.authors_group_box.setTitle(SongStrings.Authors)

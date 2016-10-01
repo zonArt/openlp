@@ -140,12 +140,14 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
                 self.verse_type_combo_box.setCurrentIndex(verse_type_index)
             self.verse_number_box.setValue(int(verse_number))
             self.insert_button.setVisible(False)
+            self.verse_language_combo_box.setVisible(False)
         else:
             if not text:
                 text = '---[{tag}:1]---\n'.format(tag=VerseType.translated_names[VerseType.Verse])
             self.verse_type_combo_box.setCurrentIndex(0)
             self.verse_number_box.setValue(1)
             self.insert_button.setVisible(True)
+            self.verse_language_combo_box.setVisible(True)
         self.verse_text_edit.setPlainText(text)
         self.verse_text_edit.setFocus()
         self.verse_text_edit.moveCursor(QtGui.QTextCursor.End)

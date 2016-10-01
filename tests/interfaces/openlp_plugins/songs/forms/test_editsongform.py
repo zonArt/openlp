@@ -62,6 +62,7 @@ class TestEditSongForm(TestCase, TestMixin):
         """
         self.assertFalse(self.form.verse_edit_button.isEnabled(), 'The verse edit button should not be enabled')
         self.assertFalse(self.form.verse_delete_button.isEnabled(), 'The verse delete button should not be enabled')
+        self.assertFalse(self.form.verse_translate_button.isEnabled(), 'The verse translate button should not be enabled')
         self.assertFalse(self.form.author_remove_button.isEnabled(), 'The author remove button should not be enabled')
         self.assertFalse(self.form.topic_remove_button.isEnabled(), 'The topic remove button should not be enabled')
 

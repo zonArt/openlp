@@ -79,6 +79,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.verse_edit_button.clicked.connect(self.on_verse_edit_button_clicked)
         self.verse_edit_all_button.clicked.connect(self.on_verse_edit_all_button_clicked)
         self.verse_delete_button.clicked.connect(self.on_verse_delete_button_clicked)
+        self.verse_translate_button.clicked.connect(self.on_verse_edit_button_clicked)
         self.verse_list_widget.itemClicked.connect(self.on_verse_list_view_clicked)
         self.verse_order_edit.textEdited.connect(self.on_verse_order_text_changed)
         self.theme_add_button.clicked.connect(self.theme_manager.on_add_theme)
@@ -309,7 +310,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 verse_id = item.data(QtCore.Qt.UserRole)
                 verse_tag = verse_id[0]
                 verse_num = verse_id[1:]
-                sxml.add_verse_to_lyrics(verse_tag, verse_num, item.text())
+                sxml.add_verse_to_lyrics(verse_tag, verse_num, item.text()) #, item.lang())
                 if verse_num > '1' and verse_tag not in multiple:
                     multiple.append(verse_tag)
             self.song.lyrics = str(sxml.extract_xml(), 'utf-8')
@@ -345,6 +346,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         self.verse_edit_button.setEnabled(False)
         self.verse_delete_button.setEnabled(False)
+        self.verse_translate_button.setEnabled(False)
         self.author_edit_button.setEnabled(False)
         self.author_remove_button.setEnabled(False)
         self.topic_remove_button.setEnabled(False)
@@ -741,6 +743,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
     def on_verse_list_view_clicked(self):
         self.verse_edit_button.setEnabled(True)
         self.verse_delete_button.setEnabled(True)
+        self.verse_translate_button.setEnabled(True)
 
     def on_verse_add_button_clicked(self):
         self.verse_form.set_verse('', True)
@@ -796,8 +799,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 item = self.verse_list_widget.item(row, 0)
                 field = item.data(QtCore.Qt.UserRole)
                 verse_tag = VerseType.translated_name(field[0])
-                verse_num = field[1:]
-                verse_list += '---[{tag}:{number}]---\n'.format(tag=verse_tag, number=verse_num)
+                verse_num = field[1]
+                verse_lang = field[2:]
+                verse_list += '---[{tag}:{number}:{lang}]---\n'.format(tag=verse_tag, number=verse_num, lang=verse_lang)
                 verse_list += item.text()
                 verse_list += '\n'
             self.verse_form.set_verse(verse_list)
@@ -843,6 +847,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.tag_rows()
         self.verse_edit_button.setEnabled(False)
         self.verse_delete_button.setEnabled(False)
+        self.verse_translate_button.setEnabled(False)
         # Check if all verse tags are used.
         self.on_verse_order_text_changed(self.verse_order_edit.text())
 
@@ -855,6 +860,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         if not self.verse_list_widget.selectedItems():
             self.verse_edit_button.setEnabled(False)
             self.verse_delete_button.setEnabled(False)
+            self.verse_translate_button.setEnabled(False)
 
     def on_verse_order_text_changed(self, text):
         """
